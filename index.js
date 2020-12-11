@@ -190,19 +190,10 @@ io.on("connection", (socket) => {
   var address = socket.conn.remoteAddress;
   // we show a message when someone connects:
   console.log(pretty_date(), " -> New connection from " + address);
+  // and we increment our player counter:
   player_number++;
-  console.log("players:", player_number);
+  // console.log("players:", player_number);
 
-  // and something when they disconnect:
-  socket.on("disconnect", () => {
-    console.log(pretty_date(), " -> Lost connection from " + address);
-    console.log("players:", player_number);
-    player_number--;
-    // inform players of number of peers!
-    io.emit("player_number", player_number);
-    // inform player of connection state!
-    socket.emit("connection", false);
-  });
   // inform player of connection state!
   socket.emit("connection", true);
 
@@ -211,6 +202,11 @@ io.on("connection", (socket) => {
 
   // always send an updated word list:
   socket.emit("fileChanged");
+
+  // THE FUNCTION FOR RESETTING THE GAME:
+  socket.on("reset", function (event) {
+    initialize();
+  });
 
   // THE FUNCTION FOR ADDING WORDS:
   socket.on("create", function (event) {
@@ -259,20 +255,21 @@ io.on("connection", (socket) => {
         solveattempts: 0,
         player: address,
       });
-      io.emit("fileChanged");
+      fs.writeFile(
+        game_file,
+        JSON.stringify(
+          { start_time: starttime, grid: grid, words: words },
+          null,
+          1
+        ),
+        function (err) {
+          if (err) return console.log(err);
+        }
+      );
+      // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
+    } else {
+      this.emit('nofit', Math.random() < 0.5);
     }
-
-    fs.writeFile(
-      game_file,
-      JSON.stringify(
-        { start_time: starttime, grid: grid, words: words },
-        null,
-        1
-      ),
-      function (err) {
-        if (err) return console.log(err);
-      }
-    );
   });
 
   // THE FUNCTION FOR TRYING TO SOLVE WORDS:
@@ -293,8 +290,11 @@ io.on("connection", (socket) => {
     // does the key exist?
     let key_of_try = Object.keys(words).find((palavra) => {
       console.log("palavra? ", words[palavra].word);
-      console.log("label? ", words[palavra].label, " - ", label);
-      console.log("horizontal? ", words[palavra].horizontal, " - ", h_true);
+      console.log("label? ", words[palavra].label, " - label: ", label);
+      console.log("horizontal? ", words[palavra].horizontal, " - horizontal htrue: ", h_true);
+      if (words[palavra].label == label && words[palavra].horizontal === h_true) {
+        console.log("é esta!!! words[palavra].word: ", words[palavra].word, " - word: ", word);
+      }
       return (
         words[palavra].label == label && words[palavra].horizontal === h_true
       );
@@ -353,6 +353,17 @@ io.on("connection", (socket) => {
       // se as palavras eram suas não vale!
       this.emit("resposta_aldrabada");
     }
+  });
+
+  // and something when a client disconnects:
+  socket.on("disconnect", () => {
+    console.log(pretty_date(), " -> Lost connection from " + address);
+    player_number--;
+    // console.log("players:", player_number);
+    // inform players of number of peers!
+    io.emit("player_number", player_number);
+    // inform player of connection state!
+    socket.emit("connection", false);
   });
 }); // end of socket logic!
 

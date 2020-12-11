@@ -230,7 +230,36 @@
 
       return false;
     }
+
+    // e a lógica de ver se a palavra é aceite ou não...
+    if (e.target && e.target.id == "reset") {
+      console.log(
+        "envio tentativa de resetar o jogo todo..."
+      );
+      socket.emit(
+        "reset"
+      );
+
+      return false;
+    }
   });
+
+  // quando se recebe uma mensagem de 'resposta certa!!'
+  socket.on("nofit", (why) => {
+    if (why) {
+      caixa_de_mensagens.innerHTML =
+        "<p class='mensagem_cimo'>essa palavra já existe...</p>";
+      console.log("essa palavra já existe...");
+    } else {
+      caixa_de_mensagens.innerHTML =
+        "<p class='mensagem_cimo'>ups, essa palavra não coube no jogo...</p>";
+      console.log("ups, essa palavra não coube no jogo...");
+    }
+    document.getElementById("tab_2").setAttribute("style", "display: none;");
+    document.getElementById("tab_3").setAttribute("style", "display: none;");
+    setCounter(timer);
+  });
+
 
   // quando se recebe uma mensagem de 'resposta certa!!'
   socket.on("resposta_certa", () => {
