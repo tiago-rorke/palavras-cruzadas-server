@@ -35,7 +35,7 @@ div {
   display: flex;
   flex-wrap: wrap;
   padding-top: 150px;
-  flex-direction: column;
+  /* flex-direction: column; */
   height: calc(100% - 150px);
 }
 
@@ -45,9 +45,9 @@ div {
   flex-direction: row;
   /* max-width: 90%; */
   /* min-height: 400px; */
-  min-width: 320px;
+  min-width: 420px;
   border: 1px solid #000;
-  margin: 50px auto;
+  margin: 25px auto;
 }
 
 .interior_tabs {
@@ -98,7 +98,7 @@ form {
   width: 50%;
 }
 
-.pista_clicavel {
+.clickable_clue {
   border: 1px solid red;
   padding: 5px;
   line-height: 2;
@@ -107,9 +107,10 @@ form {
   text-decoration: none;
   color: black;
   text-decoration: line-through;
+  word-break: break-word;
 }
 
-.pista_clicavel.active {
+.clickable_clue.active {
   text-decoration: none;
 }
 
@@ -146,6 +147,10 @@ form button:hover {
   flex-wrap: wrap;
 }
 
+#tab_5 {
+  width: 100%;
+}
+
 #tab_5 > .interior_tabs {
   padding: 10px;
 }
@@ -158,21 +163,25 @@ form button:hover {
   color: red;
 }
 
-#connection p {
+#connection {
+  display: inline-block;
+}
+
+#connection span {
   display: inline-block;
   width: 10px;
   height: 10px;
   border-radius: 50%;
 }
 
-#connection p.on {
+#connection span.on {
   background-color: green;
 }
-#connection p.off {
+#connection span.off {
   background-color: orange;
 }
 
-#contador {
+#counter {
   color: red;
   position: fixed;
   top: 5px;
@@ -221,7 +230,7 @@ form button:hover {
   justify-content: center;
 }
 
-.mensagem_cimo {
+.message_top {
   background-color: #fff;
   padding: 10px;
   border: 1px dotted red;
@@ -230,7 +239,7 @@ form button:hover {
   margin: 0 auto;
 }
 
-.texto_pequeno {
+.small_text {
   font-size: 80%;
 }
 
@@ -276,6 +285,7 @@ p {
   .tabs {
     width: 95%;
     margin: 5px auto;
+    min-width: auto;
   }
 
   .lista_palavras {

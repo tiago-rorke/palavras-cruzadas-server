@@ -86,8 +86,8 @@ let player_number = 0;
 
 // blank slate for gamestate
 let gamestate;
-// blank starttime!
-let starttime;
+// blank start_time!
+let start_time;
 // what is this grid thing?
 let grid = { width: 23, height: 16 };
 // words array:
@@ -104,7 +104,7 @@ function initialize(json = null) {
         throw err;
       }
       gamestate = JSON.parse(data_from_json);
-      starttime = gamestate.starttime;
+      start_time = gamestate.start_time;
       grid = gamestate.grid;
       words = gamestate.words;
     });
@@ -120,10 +120,11 @@ function initialize(json = null) {
         if (err) {
           throw err;
         } else {
+          start_time = pretty_date();
           fs.writeFile(
             game_file,
             JSON.stringify(
-              { start_time: pretty_date(), grid: grid, words: words },
+              { start_time: start_time, grid: {}, words: [] },
               null,
               1
             ),
@@ -258,7 +259,7 @@ io.on("connection", (socket) => {
       fs.writeFile(
         game_file,
         JSON.stringify(
-          { start_time: starttime, grid: grid, words: words },
+          { start_time: start_time, grid: grid, words: words },
           null,
           1
         ),
@@ -266,6 +267,7 @@ io.on("connection", (socket) => {
           if (err) return console.log(err);
         }
       );
+      this.emit('perfect_fit');
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
     } else {
       this.emit('nofit', Math.random() < 0.5);
@@ -334,14 +336,14 @@ io.on("connection", (socket) => {
     // se as palavras não eram suas sugestões:
     if (!cheater) {
       if (right_answer) {
-        this.emit("resposta_certa");
+        this.emit("right_answer");
       } else {
-        this.emit("resposta_errada");
+        this.emit("wrong_answer");
       }
       fs.writeFile(
         game_file,
         JSON.stringify(
-          { start_time: starttime, grid: grid, words: words },
+          { start_time: start_time, grid: grid, words: words },
           null,
           1
         ),
@@ -351,7 +353,7 @@ io.on("connection", (socket) => {
       );
     } else {
       // se as palavras eram suas não vale!
-      this.emit("resposta_aldrabada");
+      this.emit("cheat_answer");
     }
   });
 

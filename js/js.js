@@ -3,34 +3,33 @@
 (function () {
   // your page initialization code here
   // the DOM will be available here
-  // começa a história:
+  // our story begins:
 
   console.log("entrou o js!");
 
-  // começa por NÃO se poder jogar...
-  let permitidoJogar = false;
+  // we start out in 'noplay' mode...
+  let can_play = false;
 
-  // o tempo de espera para se poder jogar de novo:
+  // the default timer:
   const timer = 2;
 
-  const caixa_de_mensagens = document.getElementById("mensagens");
+  const message_box = document.getElementById("mensagens");
 
-  // temos uma função para fazer de contador:
+  // a counter function:
   function setCounter(endtime) {
-    let contador = endtime;
-    permitidoJogar = false;
-    const clock = document.getElementById("contador");
+    let counter = endtime;
+    can_play = false;
+    const clock = document.getElementById("counter");
     const timeinterval = setInterval(() => {
-      clock.innerHTML = contador + "";
-      if (contador <= 0) {
+      clock.innerHTML = counter + "";
+      if (counter <= 0) {
         clearInterval(timeinterval);
-        console.log("acabou a contagem!!");
+        console.log("counter is over!!");
         clock.innerHTML = "";
-        caixa_de_mensagens.innerHTML =
-          "<p class='mensagem_cimo'>pode jogar!</p>";
-        permitidoJogar = true;
+        message_box.innerHTML = "<p class='message_top'>pode jogar!</p>";
+        can_play = true;
       } else {
-        contador--;
+        counter--;
         document
           .getElementById("tab_2")
           .setAttribute("style", "display: none;");
@@ -38,221 +37,255 @@
           .getElementById("tab_3")
           .setAttribute("style", "display: none;");
       }
-      // mandamos correr todos os segundos:
+      // we run this every second to count time!...:
     }, 1000);
   }
 
-  // para fazer correr o contador:
+  // let the counter run:
   setCounter(timer);
 
-  // defininimos o socket.io:
-  let socket = io();
-
-  // definimos umas variáveis para guardar os pointers para os nossos 'alvos'...
+  // some variables for our target lists:
   let nome_lista;
 
+  let h_word_list = document.getElementById("lista_horizontais");
+  let v_word_list = document.getElementById("lista_verticais");
 
-  let lista_palavras_h = document.getElementById("lista_horizontais");
-  let lista_palavras_v = document.getElementById("lista_verticais");
+  /* SOCKET LOGIC! */
+  // our socket.io:
+  let socket = io();
   // when we know the gamefile has changed...:
   socket.on("fileChanged", () => {
     console.log("lista_nova! ");
-    nome_lista = 'game.json';
-    // objectoJSON = JSON.parse(lista);
+    nome_lista = "game.json";
     fetch("/" + nome_lista)
       .then((res) => res.json())
       .then((out) => {
-        // grid = words.grid;
-        // words = words.words;
-        // console.log("Checkout this JSON! ", out);
+        // horizontal words:
         let h = "";
+        // vertical words:
         let v = "";
+        // solved or not - they get crossed out by css:
         let className = "";
         out.words.forEach((element) => {
-          if(element.solved===true) {className = 'pista_clicavel' } else {className = 'pista_clicavel active';}
+          if (element.solved === true) {
+            className = "clickable_clue";
+          } else {
+            className = "clickable_clue active";
+          }
           // console.log(key);
           // console.log(element);
           if (element.horizontal === true) {
             h +=
               '<li><a id="' +
-              'h_'+element.label +
-              '" class="'+className+'" href="#" onClick="return false;">' +
+              "h_" +
+              element.label +
+              '" class="' +
+              className +
+              '" href="#" onClick="return false;">' +
+              element.clue +
+              "</a></li>";
+          } else {
+            v +=
+              '<li><a id="' +
+              "v_" +
+              element.label +
+              '" class="' +
+              className +
+              '" href="#" onClick="return false;">' +
               element.clue +
               "</a></li>";
           }
-          else {
-            v +=
-            '<li><a id="' +
-            'v_'+element.label +
-            '" class="'+className+'" href="#" onClick="return false;">' +
-            element.clue +
-            "</a></li>";
-          }
         });
-        lista_palavras_h.innerHTML = h;
-        lista_palavras_v.innerHTML = v;
+        // fill the divs up:
+        h_word_list.innerHTML = h;
+        v_word_list.innerHTML = v;
       })
       .catch((err) => {
         throw err;
       });
   });
 
-  // quando recebermos a mensagem 'server', fazemos o seguinte:
+  // CODE ONLY FOR THE PLOTTER -> :-) :
   // socket.on("server", (server) => {
   //   console.log("mensagem do server -> ", server);
   // });
 
-
-  // quando recebermos a mensagem 'connection', fazemos o seguinte:
+  // on message type 'connection':
+  // to get little green light :-)
   let connection_div = document.getElementById("connection");
   socket.on("connection", (connection) => {
-    connection ? connection_div.innerHTML = "<p class='on'></p>" : connection_div.innerHTML = "---";
+    connection
+      ? (connection_div.innerHTML = "<p>ligação: <span class='on'></span></p>")
+      : (connection_div.innerHTML = "<p>ligação: <span class='off'></span></p>");
   });
 
-
-  // quando recebermos a mensagem 'player_number', fazemos o seguinte:
+  // on message type 'player_number':
   let player_number_div = document.getElementById("player_number");
   socket.on("player_number", (player_number) => {
     player_number_div.innerHTML = player_number;
   });
 
-  // caminho inverso - send a message to server, also via sockets:
-  function sendMessageToServer(message) {
-    // socket emit:
-    socket.emit("message", message);
-    // e log também, só porque sim:
-    console.log("mensagem: " + message);
-  }
+  // a way to send messages fomr the client TO the server, also via sockets:
+  // function sendMessageToServer(message) {
+  //   socket.emit("message", message);
+  //   console.log("mensagem: " + message);
+  // }
 
-  // definimos um botão que envia a mensagem ao server, ao ser clicado:
-  document.getElementById("sendMessageToServer").onclick = function () {
-    sendMessageToServer(new Date());
-  };
+  // // a button to send the message:
+  // document.getElementById("sendMessageToServer").onclick = function () {
+  //   sendMessageToServer(new Date());
+  // };
 
-  // definimos os botões que mostram os divs, ao serem clicados:
+  //
+  // general navigation buttons:
+  //
 
-  // o botão de sugerir:
-  document.getElementById("botao_sugerir").onclick = function (e) {
+  // create_button:
+  document.getElementById("create_button").onclick = function (e) {
     e.preventDefault();
-    if (permitidoJogar) {
+    if (can_play) {
       document.getElementById("tab_3").setAttribute("style", "display: none;");
       document.getElementById("tab_2").setAttribute("style", "display: flex;");
       // console.log("click?");
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>sugerir uma palavra</p>";
+      message_box.innerHTML = "<p class='message_top'>sugerir uma palavra</p>";
     } else {
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>só mais um momento...</p>";
+      message_box.innerHTML =
+        "<p class='message_top'>só mais um momento...</p>";
     }
   };
 
-  // o botão de resolver:
-  document.getElementById("botao_resolver").onclick = function (e) {
+  // solve_button:
+  document.getElementById("solve_button").onclick = function (e) {
     e.preventDefault();
-    if (permitidoJogar) {
+    if (can_play) {
       document.getElementById("tab_2").setAttribute("style", "display: none;");
       document.getElementById("tab_3").setAttribute("style", "display: flex;");
       // console.log("click?");
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>resolver uma palavra</p>";
+      message_box.innerHTML = "<p class='message_top'>resolver uma palavra</p>";
     } else {
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>só mais um momento...</p>";
+      message_box.innerHTML =
+        "<p class='message_top'>só mais um momento...</p>";
     }
   };
 
-  // quando alguém quer acrescentar uma nova palavra+pista:
-  document.getElementById("sugerir").onclick = function enviarSugestao() {
-    let tudo_limpo = false;
-    let s_palavra = document.getElementById("form_nova_palavra").value;
-    let s_pista = document.getElementById("form_nova_pista").value;
-    if (s_palavra.length > 1 && s_palavra.length < 21 && s_pista.length > 5) {
-      tudo_limpo = true;
+  // suggesting a new word + clue:
+  document.getElementById("suggest").onclick = function enviarSugestao() {
+    // we start from a dirty word
+    let clean_word = false;
+    // we htmlstrip both word and clue
+    let word_value = document
+      .getElementById("form_nova_palavra")
+      .value.replace(/(<([^>]+)>)/gi, "");
+    let clue_value = document
+      .getElementById("form_nova_pista")
+      .value.replace(/(<([^>]+)>)/gi, "");
+
+    // console.log("clue_value", clue_value);
+    // console.log("clue_value.replace(/(<([^>]+)>)/gi,...", clue_value.replace(/(<([^>]+)>)/gi, ""));
+
+    // the rules for accepting words:
+    if (
+      word_value.length > 1 &&
+      word_value.length < 21 &&
+      clue_value.length > 5
+    ) {
+      clean_word = true;
     }
-    if (tudo_limpo) {
+
+    // if the word is 'clean':
+    if (clean_word) {
+      // we send it to the algorithm to see if it fits:
       socket.emit("create", {
         entrytime: new Date().toDateString(),
-        word: s_palavra.toUpperCase(),
-        clue: s_pista,
+        word: word_value.toUpperCase(),
+        clue: clue_value,
       });
 
-      // apagamos os campos:
+      // and we clean the fields:
       document.getElementById("form_nova_palavra").value = "";
       document.getElementById("form_nova_pista").value = "";
 
-      // e log também, só porque sim:
-      console.log("mensagem: " + s_palavra.toUpperCase(), s_pista);
+      // and log it, just because:
+      console.log("mensagem: " + word_value.toUpperCase(), clue_value);
 
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>Obrigado por participar - a sua palavra foi adicionada ao jogo!</p>";
-      // e reiniciamos o contador:
-      setCounter(timer);
+      // message_box.innerHTML =
+      //   "<p class='message_top'>Obrigado por participar - a sua palavra foi adicionada ao jogo!</p>";
+      // and reset the counter:
+      // setCounter(timer);
     } else {
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo texto_pequeno'>mínimos e máximos: palavras de duas a 20 letras, de a-z, sem espaços, os acentos são ignorados<br>e a explicação tem de ter mais de 5 caracteres!</p>";
+      message_box.innerHTML =
+        "<p class='message_top small_text'>mínimos e máximos: palavras de duas a 20 letras, de a-z, sem espaços, os acentos são ignorados<br>e a explicação tem de ter mais de 5 caracteres!</p>";
     }
   };
 
-  // diversas ações relacionadas com click em coisas...
+  // clicking things actions:
   document.addEventListener("click", function (e) {
     e.preventDefault();
 
     // console.log(e.target);
 
-    // a lógica de criar a caixa de resolver uma palavra:
-    if (e.target && e.target.className == "pista_clicavel active") {
+    // when someone clicks a clue to try to solve it:
+    if (e.target && e.target.className == "clickable_clue active") {
       // console.log("pista!");
-      // console.log("caixa_de_mensagens: ", caixa_de_mensagens);
+      // console.log("message_box: ", message_box);
 
-      caixa_de_mensagens.innerHTML =
-        '<div id="div_resolve" />' +
+      // we create a div to hold the question and a form for the answer-try:
+      message_box.innerHTML =
+        '<div id="div_resolve">' +
         "<p class='pergunta'>" +
         e.target.text +
         "?</p>" +
         '<input class="maiusculas" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="resposta?" type="text" id="' +
         e.target.id +
-        '"><button id="resolver" type="submit">Enviar</button>';
+        '"><button id="resolver" type="submit">Enviar</button></div>';
 
       // console.log("click_resolver: " + e.target.id);
     }
 
-    // e a lógica de ver se a palavra é aceite ou não...
+    //and when you click submit, we sendi it!...
     if (e.target && e.target.id == "resolver") {
-      console.log(
-        "envio tentativa de resposta...",
-        document.getElementById("div_resolve").childNodes[1]
-      );
+      // i send the proposal to the server (id=orientation+label; value=word_try):
       socket.emit(
         "solve",
         document.getElementById("div_resolve").childNodes[1].id,
         document.getElementById("div_resolve").childNodes[1].value.toUpperCase()
-      );
+        );
+        // console.log(
+        //   "envio tentativa de resposta...",
+        //   document.getElementById("div_resolve").childNodes[1]
+        // );
 
       return false;
     }
 
-    // e a lógica de ver se a palavra é aceite ou não...
+    // a hidden reset button...
     if (e.target && e.target.id == "reset") {
-      console.log(
-        "envio tentativa de resetar o jogo todo..."
-      );
-      socket.emit(
-        "reset"
-      );
+      console.log("envio tentativa de resetar o jogo todo...");
+      socket.emit("reset");
 
       return false;
     }
   });
 
-  // quando se recebe uma mensagem de 'resposta certa!!'
+  // if the word fits...
+  socket.on("perfect_fit", () => {
+    message_box.innerHTML =
+      "<p class='message_top'>Obrigado por participar - a sua palavra foi adicionada ao jogo!</p>";
+    console.log("a palavra foi acrescentada ao jogo!");
+    document.getElementById("tab_2").setAttribute("style", "display: none;");
+    document.getElementById("tab_3").setAttribute("style", "display: none;");
+    setCounter(timer);
+  });
+
+  // if the word doesn't fit...
   socket.on("nofit", (why) => {
     if (why) {
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>essa palavra já existe...</p>";
+      message_box.innerHTML =
+        "<p class='message_top'>essa palavra já existe...</p>";
       console.log("essa palavra já existe...");
     } else {
-      caixa_de_mensagens.innerHTML =
-        "<p class='mensagem_cimo'>ups, essa palavra não coube no jogo...</p>";
+      message_box.innerHTML =
+        "<p class='message_top'>ups, essa palavra não coube no jogo...</p>";
       console.log("ups, essa palavra não coube no jogo...");
     }
     document.getElementById("tab_2").setAttribute("style", "display: none;");
@@ -260,11 +293,10 @@
     setCounter(timer);
   });
 
-
   // quando se recebe uma mensagem de 'resposta certa!!'
-  socket.on("resposta_certa", () => {
-    caixa_de_mensagens.innerHTML =
-      "<p class='mensagem_cimo'>PARABÉNS - acertou na resposta certa!</p>";
+  socket.on("right_answer", () => {
+    message_box.innerHTML =
+      "<p class='message_top'>PARABÉNS - acertou na resposta certa!</p>";
     console.log("acertámos numa palavra!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
@@ -272,9 +304,9 @@
   });
 
   // quando se recebe uma mensagem de 'resposta errada!!'
-  socket.on("resposta_errada", () => {
-    caixa_de_mensagens.innerHTML =
-      "<p class='mensagem_cimo'>ohhhh - falhou! melhor sorte para a próxima...</p>";
+  socket.on("wrong_answer", () => {
+    message_box.innerHTML =
+      "<p class='message_top'>ohhhh - falhou! melhor sorte para a próxima...</p>";
     console.log("falhei...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
@@ -282,15 +314,15 @@
   });
 
   // quando se recebe uma mensagem de 'resposta aldrabada!!'
-  socket.on("resposta_aldrabada", () => {
-    caixa_de_mensagens.innerHTML =
-      "<p class='mensagem_cimo'>tentar acertar nas suas próprias palavras não vale...</p>";
+  socket.on("cheat_answer", () => {
+    message_box.innerHTML =
+      "<p class='message_top'>tentar acertar nas suas próprias palavras não vale...</p>";
     console.log("fui apanhado a aldrabar...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setCounter(30);
   });
 
-  // e chegámos ao fim da história:
+  // we have reached the end of the js!:
   console.log("acabou o js...");
 })();
