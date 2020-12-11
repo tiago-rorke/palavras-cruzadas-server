@@ -186,6 +186,8 @@
 
     // the rules for accepting words:
     if (
+      !/[^a-z]/i.test(word_value) &&
+      // !(word_value.indexOf(' ') !== -1) &&
       word_value.length > 1 &&
       word_value.length < 21 &&
       clue_value.length > 5
