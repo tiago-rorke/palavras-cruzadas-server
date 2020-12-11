@@ -159,6 +159,11 @@ form button:hover {
   text-align: center;
 }
 
+.explica img {
+  max-height: 70px;
+  margin-top: 20px;
+}}
+
 #player_number {
   color: red;
 }
