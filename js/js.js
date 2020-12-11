@@ -186,6 +186,7 @@
 
     // the rules for accepting words:
     if (
+      // we only accept characters from A to Z...
       !/[^a-z]/i.test(word_value) &&
       // !(word_value.indexOf(' ') !== -1) &&
       word_value.length > 1 &&
