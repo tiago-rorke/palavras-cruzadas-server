@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame - Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Palavras Cruzadas Colaborativas</title>
+    <link href="./css/style.css" rel="stylesheet" />
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <div id="conteudo">
+      <div id="contador"></div>
+      <div class="tabs" id="tab_1">
+        <div class="interior_tabs">
+          <p class="maiusculas">Palavras Cruzadas Colaborativas</p>
+          <!-- <p class="texto_normal">
+            Ligando-se ao site <a href="#">https://xxwords.herokuapp.yyy</a>,
+            pode participar na construção e solução deste jogo.
+          </p> -->
+          <p></p>
+          <p class="maiusculas sugerir">
+            <a href="/" class="link" id="botao_sugerir"
+              >Sugerir uma palavra + pista</a
+            >
+          </p>
+          <p class="maiusculas resolver">
+            <a href="/" class="link" id="botao_resolver">Tentar resolver</a>
+          </p>
+        </div>
+      </div>
+      <div class="tabs" id="tab_2" style="display: none">
+        <div class="interior_tabs">
+          <form
+            action=""
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+          >
+            <input
+              type="text"
+              autocomplete="off"
+              autocapitalize="none"
+              spellcheck="false"
+              id="form_nova_palavra"
+              placeholder="palavra"
+            />
+            <textarea
+              name=""
+              id="form_nova_pista"
+              cols="30"
+              rows="10"
+              placeholder="pista para adivinhar a palavra"
+            ></textarea>
+            <button id="sugerir" type="submit">Sugerir</button>
+          </form>
+        </div>
+      </div>
+      <div class="tabs" id="tab_3" style="display: none">
+        <div class="interior_tabs">
+          <div class="lista_palavras">
+            <div>
+              <h5>horizontais</h5>
+              <ul id="lista_horizontais"></ul>
+            </div>
+            <div>
+              <h5>verticais</h5>
+              <ul id="lista_verticais"></ul>
+            </div>
+            <!-- <div id="div_resolve"></div> -->
+          </div>
+        </div>
+      </div>
+      <div class="tabs" id="tab_4" style="display: none">
+        <div class="interior_tabs">
+          <p id="server-time"></p>
+          <p id="client_id"></p>
+          <button id="sendMessageToServer">manda mensagem</button>
+        </div>
+      </div>
+      <div class="tabs" id="tab_5" style="">
+        <div class="interior_tabs">
+          <div class="explica">
+            <p>Aqui explicamos o projecto, damos links para OMA e MILL, e a vida continua!</p>
+            <p>ligação: <span id="connection"><p class='off'></p></span></p>
+            <p>jogadores ligados: <span id="player_number"></span></p>
+          </div>
+        </div>
+      </div>
+      <div id="mensagens"></div>
+    </div>
+    <script src="./js/js.js"></script>
+  </body>
+</html>

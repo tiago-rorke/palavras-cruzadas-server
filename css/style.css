@@ -1,0 +1,296 @@
+@font-face {
+  font-family: "dosis";
+  src: url("Dosis-Light.ttf"); /* IE9 Compat Modes */
+  src: url("Dosis-Light.ttf") format("truetype"); /* Safari, Android, iOS */
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* max-width: calc(100% - 100px); */
+  /* font-weight: 100; */
+}
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3f3f3;
+}
+
+body,
+input,
+textarea,
+button {
+  font-family: "dosis";
+}
+
+div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+#conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 150px;
+  flex-direction: column;
+  height: calc(100% - 150px);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  /* max-width: 90%; */
+  /* min-height: 400px; */
+  min-width: 320px;
+  border: 1px solid #000;
+  margin: 50px auto;
+}
+
+.interior_tabs {
+  width: 100%;
+  /* padding: 10px; */
+}
+
+form {
+  display: flex;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  padding: 10px;
+}
+
+#tab_1 {
+  text-align: center;
+}
+
+#tab_1 * {
+  padding: 10px;
+  margin: 10px;
+  line-height: 2;
+}
+
+#tab_1 a {
+  display: block;
+  text-decoration: none;
+  /* border: 1px dotted #000; */
+  border: 1px solid black;
+  color: black;
+  background: darkgray;
+}
+#tab_1 a:hover {
+  text-decoration: underline;
+  color: white;
+}
+
+#tab_3 {
+  /* width: 80%; */
+  padding: 10px;
+}
+
+.lista_palavras {
+  display: flex;
+}
+
+.lista_palavras > div {
+  width: 50%;
+}
+
+.pista_clicavel {
+  border: 1px solid red;
+  padding: 5px;
+  line-height: 2;
+  background: white;
+  display: inline;
+  text-decoration: none;
+  color: black;
+  text-decoration: line-through;
+}
+
+.pista_clicavel.active {
+  text-decoration: none;
+}
+
+#form_nova_palavra {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+  /* font-weight: bold; */
+  margin: 10px 0;
+}
+
+#form_nova_pista {
+  padding: 5px;
+}
+
+form button {
+  font-size: 24px;
+  padding: 10px;
+  margin-top: 10px;
+  text-transform: uppercase;
+  border: 1px dotted red;
+  background-color: white;
+  outline: none;
+  color: black;
+}
+
+form button:hover {
+  cursor: pointer;
+}
+
+#tab_2 {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#tab_5 > .interior_tabs {
+  padding: 10px;
+}
+
+#tab_5 .explica {
+  text-align: center;
+}
+
+#player_number {
+  color: red;
+}
+
+#connection p {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+#connection p.on {
+  background-color: green;
+}
+#connection p.off {
+  background-color: orange;
+}
+
+#contador {
+  color: red;
+  position: fixed;
+  top: 5px;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#mensagens {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  text-align: center;
+  height: 100px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  background-image: linear-gradient(
+      45deg,
+      #f3f3f3 25%,
+      transparent 25%,
+      transparent 75%,
+      #f3f3f3 75%,
+      #f3f3f3
+    ),
+    linear-gradient(
+      45deg,
+      #f3f3f3 25%,
+      transparent 25%,
+      transparent 75%,
+      #f3f3f3 75%,
+      #f3f3f3
+    );
+  background-size: 100px 100px;
+  background-position: 0 0, 50px 50px;
+}
+
+#mensagens div {
+  /* display: flex; */
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mensagem_cimo {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px dotted red;
+  text-align: center;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.texto_pequeno {
+  font-size: 80%;
+}
+
+.pergunta {
+  margin: 5px;
+  /* font-family: monospace; */
+  font-size: 24px;
+}
+
+#div_resolve input,
+#div_resolve button {
+  font-size: 24px;
+  margin: 10px;
+  padding: 5px;
+  text-transform: uppercase;
+  border: 1px dotted red;
+  background-color: white;
+  outline: none;
+  color: black;
+  /* height: 40px; */
+}
+
+.maiusculas {
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0;
+}
+@media screen and (max-width: 768px) {
+  body {
+    /* font-size: 150%; */
+  }
+
+  #mensagens {
+    height: 150px;
+  }
+
+  #conteudo {
+    /* margin-top: 150px; */
+  }
+
+  .tabs {
+    width: 95%;
+    margin: 5px auto;
+  }
+
+  .lista_palavras {
+    display: block;
+  }
+
+  .lista_palavras > div {
+    width: 100%;
+  }
+
+  form textarea {
+    font-size: 24px;
+  }
+
+  #form_nova_palavra {
+    font-size: 30px;
+  }
+}

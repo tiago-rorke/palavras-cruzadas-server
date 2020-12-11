@@ -12,6 +12,11 @@
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "latinize": "^0.4.1",
+    "socket.io": "^3.0.3"
+  },
   "bugs": {
     "url": "https://github.com/tiago-rorke/palavras-cruzadas-server/issues"
   },
