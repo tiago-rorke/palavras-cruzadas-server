@@ -116,7 +116,8 @@
   socket.on("connection", (connection) => {
     connection
       ? (connection_div.innerHTML = "<p>ligação: <span class='on'></span></p>")
-      : (connection_div.innerHTML = "<p>ligação: <span class='off'></span></p>");
+      : (connection_div.innerHTML =
+          "<p>ligação: <span class='off'></span></p>");
   });
 
   // on message type 'player_number':
@@ -249,11 +250,11 @@
         "solve",
         document.getElementById("div_resolve").childNodes[1].id,
         document.getElementById("div_resolve").childNodes[1].value.toUpperCase()
-        );
-        // console.log(
-        //   "envio tentativa de resposta...",
-        //   document.getElementById("div_resolve").childNodes[1]
-        // );
+      );
+      // console.log(
+      //   "envio tentativa de resposta...",
+      //   document.getElementById("div_resolve").childNodes[1]
+      // );
 
       return false;
     }
@@ -279,15 +280,15 @@
 
   // if the word doesn't fit...
   socket.on("nofit", (why) => {
-    if (why) {
-      message_box.innerHTML =
-        "<p class='message_top'>essa palavra já existe...</p>";
-      console.log("essa palavra já existe...");
-    } else {
+    // if (why) {
+    //   message_box.innerHTML =
+    //     "<p class='message_top'>essa palavra já existe...</p>";
+    //   console.log("essa palavra já existe...");
+    // } else {
       message_box.innerHTML =
         "<p class='message_top'>ups, essa palavra não coube no jogo...</p>";
       console.log("ups, essa palavra não coube no jogo...");
-    }
+    // }
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setCounter(timer);

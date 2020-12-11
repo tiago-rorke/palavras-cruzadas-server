@@ -12,6 +12,12 @@ const fs = require("fs");
 // to simplify diacritics:
 const latinize = require("latinize");
 
+// to simplify diacritics:
+const crosswword = require("./js/crossword");
+const e = require("express");
+
+crosswword.init(500,300);
+
 console.log(latinize("ỆᶍǍᶆṔƚÉ áéíóúýčďěňřšťžů")); // => 'ExAmPlE aeiouycdenrstzu');
 
 // a function to print pretty time:
@@ -135,6 +141,9 @@ function initialize(json = null) {
               console.log(
                 "we created a new fresh json, because you asked me to!"
               );
+
+              // create a new game, initing crossword part:
+              crosswword.init(50,30);
               // and mark game as active:
               game_active = true;
             }
@@ -211,26 +220,36 @@ io.on("connection", (socket) => {
 
   // THE FUNCTION FOR ADDING WORDS:
   socket.on("create", function (event) {
-    console.log(event);
+    console.log("event -> ", event);
+
+    crosswword.newWord(event.word, event.clue);
 
     // a data da sugestão:
     let datestring = pretty_date();
 
     // uma probabilidade de 50/50 de ser verdade:
-    let coube = Math.random() < 0.5;
+    // let coube = Math.random() < 0.5;
 
+    let coube = crosswword.newWord(event.word, event.clue);
+
+    console.log("coube: ??? ", coube);
+    
     let concerteza = false;
 
     if (coube) {
       concerteza = {
-        // word: "palavranova",
-        // clue: "aqui vem a pista!",
-        x: Math.floor(Math.random() * 100),
-        y: Math.floor(Math.random() * 100),
-        label: Math.floor(Math.random() * 100),
-        horizontal: Math.random() < 0.5,
-        word: event.word,
-        clue: event.clue,
+        word: coube.word,
+        clue: coube.clue,
+        x: coube.x,
+        y: coube.y,
+        label: coube.label,
+        horizontal: coube.horizontal,
+        // x: Math.floor(Math.random() * 100),
+        // y: Math.floor(Math.random() * 100),
+        // label: Math.floor(Math.random() * 100),
+        // horizontal: Math.random() < 0.5,
+        // word: event.word,
+        // clue: event.clue,
         // x: event.x,
         // y: event.y,
         // label: event.label,
@@ -267,10 +286,10 @@ io.on("connection", (socket) => {
           if (err) return console.log(err);
         }
       );
-      this.emit('perfect_fit');
+      this.emit("perfect_fit");
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
     } else {
-      this.emit('nofit', Math.random() < 0.5);
+      this.emit("nofit");
     }
   });
 
@@ -293,9 +312,22 @@ io.on("connection", (socket) => {
     let key_of_try = Object.keys(words).find((palavra) => {
       console.log("palavra? ", words[palavra].word);
       console.log("label? ", words[palavra].label, " - label: ", label);
-      console.log("horizontal? ", words[palavra].horizontal, " - horizontal htrue: ", h_true);
-      if (words[palavra].label == label && words[palavra].horizontal === h_true) {
-        console.log("é esta!!! words[palavra].word: ", words[palavra].word, " - word: ", word);
+      console.log(
+        "horizontal? ",
+        words[palavra].horizontal,
+        " - horizontal htrue: ",
+        h_true
+      );
+      if (
+        words[palavra].label == label &&
+        words[palavra].horizontal === h_true
+      ) {
+        console.log(
+          "é esta!!! words[palavra].word: ",
+          words[palavra].word,
+          " - word: ",
+          word
+        );
       }
       return (
         words[palavra].label == label && words[palavra].horizontal === h_true
