@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require("fs");
 
 // ---------------------- objects ------------------------- //
 
@@ -9,18 +10,19 @@ let words = [];
 class Word {
    constructor(word, x, y, label, horizontal, clue) {
       this.word = word;
+      this.clue = clue;
       this.solved = false;
       // square number and direction in order to label the clue (ie: "14 down" or "12 across")
       this.label = label;
       this.horizontal = horizontal;
-      this.clue = clue;
 
       // new
       this.x = x;  // coordinates of first letter
       this.y = y;
       this.entrytime;      // when word was added
-      this.solvedtime;     // when word was solved
-      this.solveattempts;  // number of tries at solving the clue
+      this.solvedtime = -1;     // when word was solved
+      this.solveattempts = 0;  // number of tries at solving the clue
+      this.player;
    }
 }
 
@@ -50,6 +52,9 @@ class Square {
 // to increment the number label as needed.
 let label_index;
 
+// game metadata
+let start_time;
+let end_time;
 
 // ---------------------- load/init ------------------------- //
 
@@ -59,6 +64,8 @@ function init(w, h) {
    words = []
    grid = [];
    label_index = 0;
+   start_time = "";
+   end_time = "";
    for (let x=0; x<width; x++) {
       grid[x] = []
       for (let y=0; y<height; y++) {
@@ -69,11 +76,16 @@ function init(w, h) {
 }
 
 // initialise the words and grid arrays and fill them with the data from the json file
-function load(json) {
-   let game = JSON.parse(json);
+function load(file) {
+   let game = JSON.parse(file);
 
    // initialise
    init(game.grid.width, game.grid.height);
+
+   // load metadata
+
+   start_time = game.start_time;
+   end_time = game.end_time;
 
    for(let i=0; i<game.words.length; i++) {
 
@@ -112,6 +124,30 @@ function load(json) {
          }
       }
    }
+}
+
+function save(file) {
+   fs.writeFile(
+      file,
+      JSON.stringify(
+         {
+            start_time: start_time,
+            end_time: start_time,
+            grid:
+               {
+                  width: width,
+                  height: height,
+               },
+            words: words
+         },
+         null,
+         1
+      ),
+      function (err) {
+         if (err) return console.log(err);
+      }
+   );
+   console.log("saved", file);
 }
 
 
@@ -160,7 +196,7 @@ REALTIME CROSSWORD-MAKING LOGIC
 */
 
 // receive newly input word and decide what to do with it
-function newWord(word_string, clue_string) {
+function newWord(word_string, clue_string, entrytime, player) {
 
    let l = word_string.length;
    if (l <= 0) {
@@ -179,17 +215,17 @@ function newWord(word_string, clue_string) {
          // if this is the first word, choose a random location
          let dir = Math.random() >= 0.5;
          label_index++;
-         return addWord(word_string, Math.round(Math.random(0,width-l)), Math.round(Math.random(0,height-l)), dir, label_index, clue_string);
+         return addWord(word_string, Math.round(Math.random(0,width-l)), Math.round(Math.random(0,height-l)), dir, label_index, clue_string, entrytime, player);
       } else {
          // otherwise search for a suitable location
-         return wordsearch(word_string, clue_string);
+         return wordsearch(word_string, clue_string, entrytime, player);
       }
    }
 }
 
 
 // search the current layout for a suitable location for a new word
-function wordsearch(word_string, clue_string) {
+function wordsearch(word_string, clue_string, entrytime, player) {
    let l = word_string.length;
    let positions = [];
 
@@ -248,7 +284,7 @@ function wordsearch(word_string, clue_string) {
          label_index++;
          label = label_index;
       }
-      return addWord(word_string, x, y, horizontal, label, clue_string);
+      return addWord(word_string, x, y, horizontal, label, clue_string, entrytime, player);
    } else {
       console.log('no place found for this word, sorry');
       return false;
@@ -426,7 +462,7 @@ function testFit(word_string, x, y, horizontal) {
 
 
 // add a new word at location x,y
-function addWord(word_string, x, y, horizontal, label, clue_string) {
+function addWord(word_string, x, y, horizontal, label, clue_string, entrytime, player) {
    let id = words.length;
    let l = word_string.length;
    if(grid[x][y].label <= 0){
@@ -504,69 +540,6 @@ function printLabels() {
 }
 
 
-// ---------------------- draw functions ------------------------- //
-
-
-function drawGrid() {
-   background(255);
-   drawPoints();
-   drawLayout();
-   //drawTestfits(); // uncommment to show all possible locations when adding a word
-   drawWords();
-}
-
-function drawPoints() {
-   stroke(0);
-   noFill();
-   for (let x=0; x<=max_x; x++) {
-      for (let y=0; y<=max_y; y++) {
-         point(x*square_size, y*square_size);
-      }
-   }
-}
-
-function drawLayout() {
-   textSize(0.2*square_size);
-   for (let x=0; x<max_x; x++) {
-      for (let y=0; y<max_y; y++) {
-         if (grid[x][y].id1 >= 0) {
-            stroke(0);
-            noFill();
-            rect(x*square_size, y*square_size, square_size, square_size);
-         }
-         if (grid[x][y].label > 0) {
-            noStroke();
-            fill(0);
-            text(grid[x][y].label, x*square_size+square_size/4, y*square_size+square_size/4);
-         }
-      }
-   }
-}
-
-function drawTestfits() {
-   noStroke();
-   for (let x=0; x<max_x; x++) {
-      for (let y=0; y<max_y; y++) {
-         let a = grid[x][y].testfit;
-         if (a > 0) {
-            fill(255,0,0,a);
-            rect(x*square_size, y*square_size, square_size, square_size);
-         }
-      }
-   }
-}
-
-function drawWords() {
-   noStroke();
-   fill(0);
-   textSize(0.8*square_size);
-   for (let x=0; x<max_x; x++) {
-      for (let y=0; y<max_y; y++) {
-         text(grid[x][y].letter, x*square_size+2*square_size/3, y*square_size+2*square_size/3);
-      }
-   }
-}
-
 function printWordlist() {
    console.log("WORDLIST:");
    for(let i=0; i<words.length; i++) {
@@ -578,14 +551,21 @@ function printWordlist() {
 
 // ---------------------- module exports ------------------------- //
 
+// params
 exports.words = words;
 exports.grid = grid;
 exports.width = width;
 exports.height = height;
+exports.start_time = start_time;
+exports.end_time = end_time;
+
+// functions
+exports.newWord = newWord;
 exports.init = init;
 exports.load = load;
+exports.save = save;
+
+// debug
 exports.printWords = printWords;
 exports.printLabels = printLabels;
-exports.newWord = newWord;
-exports.drawGrid = drawGrid;
 exports.printWordlist = printWordlist;

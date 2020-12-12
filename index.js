@@ -13,10 +13,10 @@ const fs = require("fs");
 const latinize = require("latinize");
 
 // to simplify diacritics:
-const crosswword = require("./js/crossword");
+const crossword = require("./js/crossword");
 const e = require("express");
 
-crosswword.init(500,300);
+crossword.init(500,300);
 
 console.log(latinize("ỆᶍǍᶆṔƚÉ áéíóúýčďěňřšťžů")); // => 'ExAmPlE aeiouycdenrstzu');
 
@@ -90,15 +90,6 @@ let game_file = "./game.json";
 // we start with 0 players
 let player_number = 0;
 
-// blank slate for gamestate
-let gamestate;
-// blank start_time!
-let start_time;
-// what is this grid thing?
-let grid = { width: 23, height: 16 };
-// words array:
-let words = [];
-
 // a function onStart:
 function initialize(json = null) {
   // if 'json' is true, we're good to go:
@@ -109,10 +100,7 @@ function initialize(json = null) {
         console.error(err);
         throw err;
       }
-      gamestate = JSON.parse(data_from_json);
-      start_time = gamestate.start_time;
-      grid = gamestate.grid;
-      words = gamestate.words;
+      crossword.load(data_from_json);
     });
     // and mark game as active:
     game_active = true;
@@ -126,28 +114,13 @@ function initialize(json = null) {
         if (err) {
           throw err;
         } else {
-          start_time = pretty_date();
-          fs.writeFile(
-            game_file,
-            JSON.stringify(
-              { start_time: start_time, grid: {}, words: [] },
-              null,
-              1
-            ),
-            function (err) {
-              if (err) {
-                return console.log(err);
-              }
-              console.log(
-                "we created a new fresh json, because you asked me to!"
-              );
+          crossword.start_time = pretty_date();
+          crossword.save(game_file);
 
-              // create a new game, initing crossword part:
-              crosswword.init(50,30);
-              // and mark game as active:
-              game_active = true;
-            }
-          );
+          // create a new game, initing crossword part:
+          crossword.init(50,30);
+          // and mark game as active:
+          game_active = true;
         }
         console.log("the backup is done!");
       }
@@ -177,9 +150,7 @@ fs.watchFile(
         console.error(err);
         //   throw err;
       }
-      gamestate = JSON.parse(data_from_json);
-      grid = gamestate.grid;
-      words = gamestate.words;
+      crossword.load(data_from_json)
     });
     // }
     // we send a simple 'server' message:
@@ -222,70 +193,18 @@ io.on("connection", (socket) => {
   socket.on("create", function (event) {
     console.log("event -> ", event);
 
-    crosswword.newWord(event.word, event.clue);
-
     // a data da sugestão:
     let datestring = pretty_date();
 
     // uma probabilidade de 50/50 de ser verdade:
     // let coube = Math.random() < 0.5;
 
-    let coube = crosswword.newWord(event.word, event.clue);
+    let coube = crossword.newWord(event.word, event.clue, datestring, address);
 
     console.log("coube: ??? ", coube);
-    
-    let concerteza = false;
 
     if (coube) {
-      concerteza = {
-        word: coube.word,
-        clue: coube.clue,
-        x: coube.x,
-        y: coube.y,
-        label: coube.label,
-        horizontal: coube.horizontal,
-        // x: Math.floor(Math.random() * 100),
-        // y: Math.floor(Math.random() * 100),
-        // label: Math.floor(Math.random() * 100),
-        // horizontal: Math.random() < 0.5,
-        // word: event.word,
-        // clue: event.clue,
-        // x: event.x,
-        // y: event.y,
-        // label: event.label,
-        // horizontal: event.horizontal,
-      };
-    }
-
-    // let concerteza = wordsearch(event.palavra.toUpperCase(), event.pista);
-    console.log("concerteza: " + JSON.stringify(concerteza));
-
-    // se o algoritmo disser algo diferente de impossível...:
-    if (concerteza) {
-      words.push({
-        word: concerteza.word,
-        clue: concerteza.clue,
-        x: concerteza.x,
-        y: concerteza.y,
-        label: concerteza.label,
-        horizontal: concerteza.horizontal,
-        solved: false,
-        entrytime: datestring,
-        solvedtime: -1,
-        solveattempts: 0,
-        player: address,
-      });
-      fs.writeFile(
-        game_file,
-        JSON.stringify(
-          { start_time: start_time, grid: grid, words: words },
-          null,
-          1
-        ),
-        function (err) {
-          if (err) return console.log(err);
-        }
-      );
+      crossword.save(game_file);
       this.emit("perfect_fit");
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
     } else {
@@ -309,28 +228,28 @@ io.on("connection", (socket) => {
     // console.log("label:", label);
 
     // does the key exist?
-    let key_of_try = Object.keys(words).find((palavra) => {
-      console.log("palavra? ", words[palavra].word);
-      console.log("label? ", words[palavra].label, " - label: ", label);
+    let key_of_try = Object.keys(crossword.words).find((palavra) => {
+      console.log("palavra? ", crossword.words[palavra].word);
+      console.log("label? ", crossword.words[palavra].label, " - label: ", label);
       console.log(
         "horizontal? ",
-        words[palavra].horizontal,
+        crossword.words[palavra].horizontal,
         " - horizontal htrue: ",
         h_true
       );
       if (
-        words[palavra].label == label &&
-        words[palavra].horizontal === h_true
+        crossword.words[palavra].label == label &&
+        crossword.words[palavra].horizontal === h_true
       ) {
         console.log(
-          "é esta!!! words[palavra].word: ",
-          words[palavra].word,
+          "é esta!!! crossword.words[palavra].word: ",
+          crossword.words[palavra].word,
           " - word: ",
           word
         );
       }
       return (
-        words[palavra].label == label && words[palavra].horizontal === h_true
+        crossword.words[palavra].label == label && crossword.words[palavra].horizontal === h_true
       );
     });
     console.log("key H:", key_of_try);
@@ -343,25 +262,25 @@ io.on("connection", (socket) => {
     // was that key good for the try?:
     if (key_of_try) {
       console.log(
-        "words[key_of_try].word.toUpperCase()!",
-        words[key_of_try].word.toUpperCase(),
+        "crossword.words[key_of_try].word.toUpperCase()!",
+        crossword.words[key_of_try].word.toUpperCase(),
         "latinize(word.toUpperCase()",
         latinize(word.toUpperCase())
       );
-      if (words[key_of_try].player === address) {
+      if (crossword.words[key_of_try].player === address) {
         cheater = true;
       }
       if (
-        latinize(words[key_of_try].word.toUpperCase()) ===
+        latinize(crossword.words[key_of_try].word.toUpperCase()) ===
           latinize(word.toUpperCase()) &&
-        words[key_of_try].player !== address
+        crossword.words[key_of_try].player !== address
       ) {
         console.log("CORRECT!");
-        words[key_of_try].solved = true;
-        words[key_of_try].solvedtime = pretty_date();
+        crossword.words[key_of_try].solved = true;
+        crossword.words[key_of_try].solvedtime = pretty_date();
         right_answer = true;
       } else {
-        words[key_of_try].solveattempts += 1;
+        crossword.words[key_of_try].solveattempts += 1;
       }
     }
 
@@ -372,17 +291,7 @@ io.on("connection", (socket) => {
       } else {
         this.emit("wrong_answer");
       }
-      fs.writeFile(
-        game_file,
-        JSON.stringify(
-          { start_time: start_time, grid: grid, words: words },
-          null,
-          1
-        ),
-        function (err) {
-          if (err) return console.log(err);
-        }
-      );
+      crossword.save(game_file);
     } else {
       // se as palavras eram suas não vale!
       this.emit("cheat_answer");
