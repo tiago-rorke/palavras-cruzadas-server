@@ -21,12 +21,12 @@
   {
    "word": "PASTA",
    "clue": "i can't believe it's not pizza!",
-   "solved": false,
+   "solved": true,
    "label": 2,
    "horizontal": true,
    "x": 0,
    "y": 0,
-   "solvedtime": -1,
+   "solvedtime": "2020-12-16 01:37:43:282",
    "solveattempts": 0
   },
   {
@@ -47,6 +47,39 @@
    "label": 3,
    "horizontal": true,
    "x": 2,
+   "y": 0,
+   "solvedtime": -1,
+   "solveattempts": 0
+  },
+  {
+   "word": "TESTAR",
+   "clue": "ver se funciona",
+   "solved": false,
+   "label": 3,
+   "horizontal": true,
+   "x": 2,
+   "y": 0,
+   "solvedtime": -1,
+   "solveattempts": 0
+  },
+  {
+   "word": "FUNKE",
+   "clue": "baile brasileiro",
+   "solved": false,
+   "label": 2,
+   "horizontal": true,
+   "x": 0,
+   "y": 0,
+   "solvedtime": -1,
+   "solveattempts": 0
+  },
+  {
+   "word": "INVISIVEL",
+   "clue": "quando nenguem consegue ver a cena",
+   "solved": false,
+   "label": 4,
+   "horizontal": true,
+   "x": 9,
    "y": 0,
    "solvedtime": -1,
    "solveattempts": 0

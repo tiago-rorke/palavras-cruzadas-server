@@ -13,10 +13,10 @@ const fs = require("fs");
 const latinize = require("latinize");
 
 // to simplify diacritics:
-const crossword = require("./js/crossword");
+const Crossword = require("./js/crossword");
 const e = require("express");
 
-crossword.init(500,300);
+let crossword = new Crossword(500,300);
 
 console.log(latinize("ỆᶍǍᶆṔƚÉ áéíóúýčďěňřšťžů")); // => 'ExAmPlE aeiouycdenrstzu');
 
