@@ -3,6 +3,7 @@
 
 const fs = require("fs");
 
+
 // ---------------------- objects ------------------------- //
 
 class Word {
@@ -112,15 +113,15 @@ internal.Crossword = class {
          }
       }
       // init the gridlines
-      for (let x=0; x<this.width+1; x++) {
+      for (let x=0; x<this.width; x++) {
          this.gridlines_h[x] = [];
-         for (let y=0; y<this.height; y++) {
+         for (let y=0; y<this.height+1; y++) {
            this.gridlines_h[x][y] = -1;
          }
       }
-      for (let x=0; x<this.width; x++) {
+      for (let x=0; x<this.width+1; x++) {
          this.gridlines_v[x] = [];
-         for (let y=0; y<this.height+1; y++) {
+         for (let y=0; y<this.height; y++) {
            this.gridlines_v[x][y] = -1;
          }
       }
@@ -243,6 +244,23 @@ internal.Crossword = class {
       }
    }
 
+   undrawGridlines() {
+      for (let x=0; x<this.width; x++) {
+         for (let y=0; y<this.height+1; y++) {
+            if(this.gridlines_h[x][y] == 0) {
+               this.gridlines_h[x][y] = 1;
+            }
+         }
+      }
+      for (let x=0; x<this.width+1; x++) {
+         for (let y=0; y<this.height; y++) {
+            if(this.gridlines_v[x][y] == 0) {
+               this.gridlines_v[x][y] = 1;
+            }
+         }
+      }
+   }
+
    // ---------------------- word functiosn ------------------------- //
 
    /*
@@ -308,7 +326,16 @@ internal.Crossword = class {
             // if this is the first word, choose a random location
             let dir = Math.random() >= 0.5;
             this.label_index++;
-            return this.addWord(word_string, Math.round(Math.random(0,width-l)), Math.round(Math.random(0,height-l)), dir, label_index, clue_string, entrytime, player);
+            return this.addWord(
+               word_string,
+               Math.round(Math.random(0,this.width-l)),
+               Math.round(Math.random(0,this.height-l)),
+               dir,
+               this.label_index,
+               clue_string,
+               entrytime,
+               player
+               );
          } else {
             //console.log('running wordsearch...');
             // otherwise search for a suitable location
