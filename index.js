@@ -115,10 +115,11 @@ function initialize(json = null) {
           throw err;
         } else {
           crossword.start_time = pretty_date();
-          crossword.save(game_file);
-
+          
           // create a new game, initing crossword part:
           crossword.init(50,30);
+          // start a new json:
+          crossword.save(game_file);
           // and mark game as active:
           game_active = true;
         }

@@ -83,7 +83,11 @@
               className +
               '" href="#" onClick="return false;">' +
               element.clue +
-              "</a></li>";
+              "</a>" +
+              "<span class='tentativas'>" +
+              element.solveattempts +
+              "</span>" +
+              "</li>";
           } else {
             v +=
               '<li><a id="' +
@@ -93,7 +97,11 @@
               className +
               '" href="#" onClick="return false;">' +
               element.clue +
-              "</a></li>";
+              "</a>" +
+              "<span class='tentativas'>" +
+              element.solveattempts +
+              "</span>" +
+              "</li>";
           }
         });
         // fill the divs up:
@@ -145,8 +153,10 @@
   document.getElementById("create_button").onclick = function (e) {
     e.preventDefault();
     if (can_play) {
+      // document.getElementById("form_nova_palavra").focus();
       document.getElementById("tab_3").setAttribute("style", "display: none;");
       document.getElementById("tab_2").setAttribute("style", "display: flex;");
+      document.getElementById("form_nova_palavra").focus();
       // console.log("click?");
       message_box.innerHTML = "<p class='message_top'>sugerir uma palavra</p>";
     } else {
@@ -288,9 +298,9 @@
     //     "<p class='message_top'>essa palavra já existe...</p>";
     //   console.log("essa palavra já existe...");
     // } else {
-      message_box.innerHTML =
-        "<p class='message_top'>ups, essa palavra não coube no jogo...</p>";
-      console.log("ups, essa palavra não coube no jogo...");
+    message_box.innerHTML =
+      "<p class='message_top'>ups, essa palavra não coube no jogo...</p>";
+    console.log("ups, essa palavra não coube no jogo...");
     // }
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");

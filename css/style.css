@@ -116,6 +116,11 @@ form {
   word-break: break-word;
 }
 
+.tentativas {
+  font-size: 20px;
+  margin-left: 10px;
+}
+
 .clickable_clue.active {
   text-decoration: none;
 }
@@ -126,6 +131,19 @@ form {
   /* font-size: 18px; */
   /* font-weight: bold; */
   margin: 10px 0;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: pink;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: pink;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: pink;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: pink;
 }
 
 #form_nova_pista {
