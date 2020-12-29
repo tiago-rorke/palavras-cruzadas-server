@@ -16,6 +16,7 @@
    "y": 4,
    "solvedtime": -1,
    "solveattempts": 0,
+   "drawing": -1,
    "entrytime": 0
   },
   {
@@ -27,7 +28,8 @@
    "x": 0,
    "y": 0,
    "solvedtime": "2020-12-16 01:37:43:282",
-   "solveattempts": 0
+   "solveattempts": 5,
+   "drawing": -1
   },
   {
    "word": "SATURDAY",
@@ -38,7 +40,8 @@
    "x": 0,
    "y": 0,
    "solvedtime": -1,
-   "solveattempts": 0
+   "solveattempts": 0,
+   "drawing": -1
   },
   {
    "word": "CURTIR",
@@ -49,7 +52,8 @@
    "x": 2,
    "y": 0,
    "solvedtime": -1,
-   "solveattempts": 0
+   "solveattempts": 4,
+   "drawing": -1
   },
   {
    "word": "TESTAR",
@@ -60,7 +64,8 @@
    "x": 2,
    "y": 0,
    "solvedtime": -1,
-   "solveattempts": 0
+   "solveattempts": 0,
+   "drawing": -1
   },
   {
    "word": "FUNKE",
@@ -71,18 +76,44 @@
    "x": 0,
    "y": 0,
    "solvedtime": -1,
-   "solveattempts": 0
+   "solveattempts": 0,
+   "drawing": -1
   },
   {
    "word": "INVISIVEL",
    "clue": "quando nenguem consegue ver a cena",
-   "solved": false,
+   "solved": true,
    "label": 4,
    "horizontal": true,
    "x": 9,
    "y": 0,
-   "solvedtime": -1,
-   "solveattempts": 0
+   "solvedtime": "2020-12-27 17:17:04:140",
+   "solveattempts": 0,
+   "drawing": -1
+  },
+  {
+   "word": "DIARREIA",
+   "clue": "coco liquido",
+   "solved": true,
+   "label": 5,
+   "horizontal": true,
+   "x": 0,
+   "y": 2,
+   "solvedtime": "2020-12-27 17:24:57:935",
+   "solveattempts": 0,
+   "drawing": -1
+  },
+  {
+   "word": "ORGIA",
+   "clue": "sexo com vários parcerios simultaneos",
+   "solved": true,
+   "label": 6,
+   "horizontal": true,
+   "x": 18,
+   "y": 1,
+   "solvedtime": "2020-12-27 17:24:37:664",
+   "solveattempts": 1,
+   "drawing": -1
   }
  ]
 }
