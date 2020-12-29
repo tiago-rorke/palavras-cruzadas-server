@@ -23,11 +23,12 @@ class Word {
       this.solveattempts = 0;  // number of tries at solving the clue
       this.player = player;
 
-      // used for drawing with plotter
+      // --------- don't think this is needed, as it is handled in grid[][]
+      // for drawing with plotter
       // -1 = nothing to draw
       //  0 = drawn
       //  1 = waiting to be drawn
-      this.drawing = -1
+      // this.drawing = -1;
    }
 }
 
@@ -48,6 +49,13 @@ class Square {
       this.id2 = -1;
       // for debugging testfit word locations
       this.testfit = 0;
+
+      // for drawing with plotter
+      // -1 = nothing to draw
+      //  0 = drawn
+      //  1 = waiting to be drawn
+      this.label_drawing = -1;
+      this.letter_drawing = -1;
    }
 }
 
@@ -70,7 +78,7 @@ internal.Crossword = class {
       this.words = []; // array of word objects
       this.grid = []; // 2d array of square objects
 
-      // used for drawing with plotter
+      // for drawing with plotter
       // -1 = nothing to draw
       //  0 = drawn
       //  1 = waiting to be drawn
@@ -165,9 +173,7 @@ internal.Crossword = class {
          if(w.label > this.label_index) {
             this.label_index = w.label;
          }
-
-         this.updateGrid();
-         this.updateGridlines();
+         this.update();
       }
 
       // not sure if should be an async function...
@@ -201,16 +207,28 @@ internal.Crossword = class {
       return true;
    }
 
+   update() {
+      console.log("updating grid etc...");
+      this.updateGrid();
+      this.updateGridlines();
+   }
+
    // update the crossword grid based on words[]
    updateGrid() {
       for(let i=0; i<this.words.length; i++) {
          let w = this.words[i];
          this.grid[w.x][w.y].label = w.label;
+         if(this.grid[w.x][w.y].label_drawing < 0) {
+            this.grid[w.x][w.y].label_drawing = 1;
+         }
          for(let h=0; h<w.word.length; h++) {
             if(w.horizontal) {
                this.grid[w.x + h][w.y].letter = w.word.charAt(h);
-               if(!this.grid[w.x + h][w.y].solved) {
-                  this.grid[w.x + h][w.y].solved = w.solved;
+               if(w.solved) {
+                  this.grid[w.x + h][w.y].solved = true;
+                  if(this.grid[w.x + h][w.y].letter_drawing < 0) {
+                     this.grid[w.x + h][w.y].letter_drawing = 1;
+                  }
                }
                if (this.grid[w.x+h][w.y].id1 >= 0) {
                   this.grid[w.x+h][w.y].id2 = i;
@@ -219,13 +237,16 @@ internal.Crossword = class {
                }
             } else {
                this.grid[w.x][w.y + h].letter = w.word.charAt(h);
+               if(w.solved) {
+                  this.grid[w.x][w.y + h].solved = true;
+                  if(this.grid[w.x][w.y + h].letter_drawing < 0) {
+                     this.grid[w.x][w.y + h].letter_drawing = 1;
+                  }
+               }
                if (this.grid[w.x][w.y+h].id1 >= 0) {
                   this.grid[w.x][w.y+h].id2 = i;
                } else {
                   this.grid[w.x][w.y+h].id1 = i;
-               }
-               if(!this.grid[w.x][w.y + h].solved) {
-                  this.grid[w.x][w.y + h].solved = w.solved;
                }
             }
          }
@@ -236,10 +257,11 @@ internal.Crossword = class {
       for (let x=0; x<this.width; x++) {
          for (let y=0; y<this.height; y++) {
             if (this.grid[x][y].letter != ' ') {
-               this.gridlines_v[x][y] = 1;
-               this.gridlines_v[x+1][y] = 1;
-               this.gridlines_h[x][y] = 1;
-               this.gridlines_h[x][y+1] = 1;
+               // mark for drawing if not already drawn
+               this.gridlines_v[x][y]   = this.gridlines_v[x][y]   == 0 ? 0 : 1;
+               this.gridlines_v[x+1][y] = this.gridlines_v[x+1][y] == 0 ? 0 : 1;
+               this.gridlines_h[x][y]   = this.gridlines_h[x][y]   == 0 ? 0 : 1;
+               this.gridlines_h[x][y+1] = this.gridlines_h[x][y+1] == 0 ? 0 : 1;
             }
          }
       }
@@ -585,40 +607,10 @@ internal.Crossword = class {
 
    // add a new word at location x,y
    addWord(word_string, x, y, horizontal, label, clue_string, entrytime, player) {
-      let id = this.words.length;
-      let l = word_string.length;
-      if(this.grid[x][y].label <= 0){
-         this.grid[x][y].label = label;
-      } else {
-         if(this.grid[x][y].label != label) {
-            return console.log('something went wrong: trying relabel a square', err);
-         }
-      }
-      for (let i=0; i<l; i++) {
-         if (horizontal) {
-            if(x+i < this.width) {
-               if (this.grid[x+i][y].id1 >= 0) {
-                  this.grid[x+i][y].id2 = id;
-               } else {
-                  this.grid[x+i][y].id1 = id;
-               }
-               this.grid[x+i][y].letter = word_string.charAt(i);
-            }
-         } else {
-            if(y+i < this.height) {
-               if (this.grid[x][y+i].id1 >= 0) {
-                  this.grid[x][y+i].id2 = id;
-               } else {
-                  this.grid[x][y+i].id1 = id;
-               }
-               this.grid[x][y+i].letter = word_string.charAt(i);
-            }
-         }
-      }
-      this.updateGridlines();
       let word = new Word(word_string, x, y, label, horizontal, clue_string, entrytime, player);
       console.log(word);
       this.words.push(word);
+      this.update();
       // console.log(label, horizontal?'across':'down',':', clue_string);
       // console.log('total words:', this.words.length);
       return word;
