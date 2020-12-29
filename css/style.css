@@ -23,7 +23,7 @@ input,
 textarea,
 button {
   font-family: "dosis";
-  font-size: 150%;
+  font-size: 1.5em;
 }
 
 #form_nova_palavra {
@@ -40,9 +40,9 @@ div {
 #conteudo {
   display: flex;
   flex-wrap: wrap;
-  padding-top: 150px;
+  padding-top: 200px;
   /* flex-direction: column; */
-  height: calc(100% - 150px);
+  height: calc(100% - 200px);
 }
 
 .tabs {
@@ -133,7 +133,7 @@ form {
 }
 
 form button {
-  font-size: 24px;
+  font-size: 32px;
   padding: 10px;
   margin-top: 10px;
   text-transform: uppercase;
@@ -168,7 +168,11 @@ form button:hover {
 .explica img {
   max-height: 70px;
   margin-top: 20px;
-}}
+}
+
+.players_container {
+  display: inline-block;
+}
 
 #player_number {
   color: red;
@@ -210,7 +214,7 @@ form button:hover {
   width: 100%;
   background-color: #fff;
   text-align: center;
-  height: 100px;
+  height: 200px;
   align-items: center;
   display: flex;
   justify-content: center;
@@ -257,12 +261,12 @@ form button:hover {
 .pergunta {
   margin: 5px;
   /* font-family: monospace; */
-  font-size: 24px;
+  /* font-size: 24px; */
 }
 
 #div_resolve input,
 #div_resolve button {
-  font-size: 24px;
+  font-size: 32px;
   margin: 10px;
   padding: 5px;
   text-transform: uppercase;
@@ -281,12 +285,16 @@ p {
   margin: 0;
 }
 @media screen and (max-width: 1200px) {
-  body {
-    /* font-size: 150%; */
+  body,
+  input,
+  textarea,
+  button {
+    font-family: "dosis";
+    font-size: 2.5em;
   }
-
+  
   #mensagens {
-    height: 150px;
+    /* height: 150px; */
   }
 
   #conteudo {
@@ -308,10 +316,10 @@ p {
   }
 
   form textarea {
-    font-size: 24px;
+    font-size: 32px;
   }
 
   #form_nova_palavra {
-    font-size: 30px;
+    font-size: 40px;
   }
 }
