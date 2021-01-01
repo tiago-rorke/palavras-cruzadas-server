@@ -355,8 +355,8 @@ internal.Crossword = class {
             this.label_index++;
             return this.addWord(
                word_string,
-               Math.round(Math.random(0,this.width-l)),
-               Math.round(Math.random(0,this.height-l)),
+               Math.round(Math.random() * this.width-l),
+               Math.round(Math.random() * this.height-l),
                dir,
                this.label_index,
                clue_string,
@@ -414,7 +414,7 @@ internal.Crossword = class {
       if(highscore >= 0) {
          let new_position;
          if(best_positions.length > 1) {
-            let i = Math.floor(Math.random(0,best_positions.length));
+            let i = Math.floor(Math.random() * best_positions.length);
             new_position = best_positions[i];
          } else {
             new_position = best_positions[0];
