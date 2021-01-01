@@ -16,7 +16,8 @@ const latinize = require("latinize");
 const Crossword = require("./js/crossword");
 const e = require("express");
 
-let crossword = new Crossword(500,300);
+// create the crossword object, game size is set in initialize()
+let crossword = new Crossword(0,0);
 
 console.log(latinize("ỆᶍǍᶆṔƚÉ áéíóúýčďěňřšťžů")); // => 'ExAmPlE aeiouycdenrstzu');
 
@@ -84,28 +85,46 @@ const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 const io = socketIO(server);
 
 let game_active = false;
-let game_folder = "./old_games/";
-let game_file = "./game.json";
+const game_folder = "./old_games/";
+const game_file = "./game.json";
+const config_file = "./config.json"
+
+// load config file
+let config;
+try {
+  config = JSON.parse(fs.readFileSync(config_file, 'utf8'));
+} catch (err) {
+  return console.log(err);
+}
 
 // we start with 0 players
 let player_number = 0;
 
 // a function onStart:
-function initialize(json = null) {
-  // if 'json' is true, we're good to go:
-  if (json !== null) {
+function initialize(new_game) {
+  // if we want to reload an existing game
+  if (!new_game) {
     // read json and fill our arrays:
     fs.readFile(game_file, "utf8", (err, data_from_json) => {
       if (err) {
-        console.error(err);
-        throw err;
+        if (err.code === 'ENOENT') {
+          // if no json file, start a new game
+          console.log('no game file found, starting a new game');
+          crossword.start_time = pretty_date();
+          crossword.init(config.game.width, config.game.height);
+          crossword.save(game_file);
+          game_active = true;
+        } else {
+          console.error(err);
+          throw err;
+        }
       }
       crossword.load(data_from_json);
     });
     // and mark game as active:
     game_active = true;
   }
-  // if we don't have json, we backup the old one and start anew:
+  // if we want to start a new game, backup the old one and start anew:
   else {
     fs.rename(
       game_file,
@@ -115,9 +134,9 @@ function initialize(json = null) {
           throw err;
         } else {
           crossword.start_time = pretty_date();
-          
+
           // create a new game, initing crossword part:
-          crossword.init(50,30);
+          crossword.init(config.game.width, config.game.height);
           // start a new json:
           crossword.save(game_file);
           // and mark game as active:
@@ -130,10 +149,10 @@ function initialize(json = null) {
 }
 
 // to start the game from zero:
-// initialize();
+// initialize(true);
 
 // to continue a half-played game:
-initialize(true);
+initialize(false);
 
 // we check constantly for changes in the game file:
 fs.watchFile(
@@ -151,7 +170,7 @@ fs.watchFile(
         console.error(err);
         //   throw err;
       }
-      crossword.load(data_from_json)
+      crossword.load(data_from_json);
     });
     // }
     // we send a simple 'server' message:
@@ -187,7 +206,7 @@ io.on("connection", (socket) => {
 
   // THE FUNCTION FOR RESETTING THE GAME:
   socket.on("reset", function (event) {
-    initialize();
+    initialize(true);
   });
 
   // THE FUNCTION FOR ADDING WORDS:
