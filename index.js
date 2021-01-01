@@ -104,7 +104,6 @@ let player_number = 0;
 function initialize(new_game) {
   // if we want to reload an existing game
   if (!new_game) {
-    console.log('reloading from game.json');
     // read json and fill our arrays:
     fs.readFile(game_file, "utf8", (err, data_from_json) => {
       if (err) {
@@ -127,7 +126,6 @@ function initialize(new_game) {
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
-    console.log('starting a new game, saving old one');
     fs.rename(
       game_file,
       game_folder + pretty_computer_date() + ".json",
@@ -148,8 +146,6 @@ function initialize(new_game) {
       }
     );
   }
-  console.log("config = ", config.game.width, config.game.height);
-  console.log("gamesize = ", crossword.width, crossword.height);
 }
 
 // to start the game from zero:
