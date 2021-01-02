@@ -114,6 +114,8 @@ function initialize(new_game) {
           crossword.init(config.game.width, config.game.height);
           crossword.save(game_file);
           game_active = true;
+          io.emit("server", { message: "newGame" });
+          io.emit("newGame");
         } else {
           console.error(err);
           throw err;
