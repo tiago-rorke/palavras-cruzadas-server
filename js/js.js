@@ -82,6 +82,8 @@
               '" class="' +
               className +
               '" href="#" onClick="return false;">' +
+              element.label +
+              " "
               element.clue +
               "</a>" +
               "<span class='tentativas'>" +
@@ -96,6 +98,8 @@
               '" class="' +
               className +
               '" href="#" onClick="return false;">' +
+              element.label +
+              " "
               element.clue +
               "</a>" +
               "<span class='tentativas'>" +
