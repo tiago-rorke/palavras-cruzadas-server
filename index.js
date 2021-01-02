@@ -114,6 +114,8 @@ function initialize(new_game) {
           crossword.init(config.game.width, config.game.height);
           crossword.save(game_file);
           game_active = true;
+
+          // let the clients know so they can initialise the game grid
           io.emit("server", { message: "newGame" });
           io.emit("newGame");
         } else {
@@ -143,6 +145,10 @@ function initialize(new_game) {
           crossword.save(game_file);
           // and mark game as active:
           game_active = true;
+
+          // let the clients know so they can initialise the game grid
+          io.emit("server", { message: "newGame" });
+          io.emit("newGame");
         }
         console.log("the backup is done!");
       }
