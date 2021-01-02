@@ -111,7 +111,7 @@ form {
   background: white;
   display: inline;
   text-decoration: none;
-  color: black;
+  color: #888;
   text-decoration: line-through;
   word-break: break-word;
 }
@@ -123,6 +123,7 @@ form {
 
 .clickable_clue.active {
   text-decoration: none;
+  color: black;
 }
 
 #form_nova_palavra {

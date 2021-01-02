@@ -104,6 +104,7 @@ let player_number = 0;
 function initialize(new_game) {
   // if we want to reload an existing game
   if (!new_game) {
+    console.log("restoring game...");
     // read json and fill our arrays:
     fs.readFile(game_file, "utf8", (err, data_from_json) => {
       if (err) {
@@ -130,6 +131,7 @@ function initialize(new_game) {
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
+    console.log("archiving current game, starting a new one");
     fs.rename(
       game_file,
       game_folder + pretty_computer_date() + ".json",
