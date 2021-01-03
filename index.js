@@ -85,10 +85,10 @@ const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 const io = socketIO(server);
 
 let game_active = false;
-const aws_bucket = "http://s3.amazonaws.com/palavras-cruzadas-server"
-const game_folder = aws_bucket + "/old_games/";
-const game_file = aws_bucket + "/game.json";
-const config_file = aws_bucket + "/config.json"
+const aws_bucket = "https://palavras-cruzadas-server.s3.amazonaws.com/";
+const game_folder = aws_bucket + "old_games/";
+const game_file = aws_bucket + "game.json";
+const config_file = aws_bucket + "config.json"
 
 // load config file
 let config;
