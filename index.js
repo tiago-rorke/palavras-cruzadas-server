@@ -16,10 +16,134 @@ const latinize = require("latinize");
 const Crossword = require("./js/crossword");
 const e = require("express");
 
+// AWS S3 for file storage
+const aws = require('aws-sdk');
+
 // create the crossword object, game size is set in initialize()
 let crossword = new Crossword(0,0);
 
+// testing latinize
 console.log(latinize("ỆᶍǍᶆṔƚÉ áéíóúýčďěňřšťžů")); // => 'ExAmPlE aeiouycdenrstzu');
+
+// port comes from ENV - or else it's 3000:
+const PORT = process.env.PORT || 3000;
+
+// we create the APP:
+var app = express();
+
+// we need some folders for static files:
+app.use("/", express.static(__dirname + "/"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/js", express.static(__dirname + "/js"));
+
+// first page to be served is:
+const INDEX = "./index.html";
+
+// we answer to requests with our index::
+app.use((req, res) => res.sendFile(INDEX, { root: __dirname }));
+
+// we create the server object:
+const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+// the socket gets the server object:
+const io = socketIO(server);
+
+// files we are using
+const game_folder = "old_games/";
+const game_file = "game.json";
+const config_file = "config.json"
+
+// for storing vars from config file
+let config;
+
+// game state flag
+let game_active;
+
+// for counting players
+let player_number;
+
+
+// ---------------------- AWS S3 for file storage ------------------ //
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWSAccessKeyId,
+  secretAccessKey: process.env.AWSSecretKey,
+  Bucket: process.env.S3_BUCKET_NAME
+});
+const aws_bucket = "palavras-cruzadas-server"
+
+async function s3Download(file) {
+  return new Promise((resolve, reject) => {
+    s3.createBucket({Bucket: aws_bucket}, () => {
+      s3.getObject({Bucket: aws_bucket, Key: file}, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  });
+}
+
+async function s3Upload(file, contents) {
+  return new Promise((resolve, reject) => {
+    s3.createBucket({Bucket: aws_bucket}, () => {
+      s3.putObject({Bucket: aws_bucket, Key: file, Body: contents}, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  });
+}
+
+async function s3SyncFile(file) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, "utf8", async (err, data) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          // if file doesn't exist, get it from the bucket
+          console.log(file, "not found, getting from S3 bucket...");
+          let s3_data = await s3Download(file);
+          await fs.writeFile(file, s3_data.Body, (err) => {
+              if (err) {
+                return console.log(err);
+              } else {
+                console.error("done");
+                resolve(true);
+              }
+            }
+          );
+        } else {
+          console.error(err);
+          reject(err);
+          //throw err;
+        }
+      } else {
+        // otherwise, upload it to the bucket
+        console.log("uploading " + file + " to S3 bucket...");
+        await s3Upload(file, data);
+        console.error("done");
+        resolve(true);
+      }
+    });
+  });
+}
+
+async function s3test() {
+  let updata = await s3Upload("test.txt", "hello s3");
+  console.log(updata);
+  let data = await s3Download("config.json");
+  let data_p = JSON.parse(data.Body);
+  console.log(data_p);
+}
+//s3test();
+
+
+// -------------------------- TIMESTAMPS --------------------------- //
 
 // a function to print pretty time:
 function pretty_date() {
@@ -61,52 +185,33 @@ function pretty_computer_date() {
   return datestring;
 }
 
-// port comes from ENV - or else it's 3000:
-const PORT = process.env.PORT || 3000;
+// ----------------------------- INIT ------------------------------ //
 
-// we create the APP:
-var app = express();
-
-// we need some folders for static files:
-app.use("/", express.static(__dirname + "/"));
-app.use("/css", express.static(__dirname + "/css"));
-app.use("/js", express.static(__dirname + "/js"));
-
-// first page to be served is:
-const INDEX = "./index.html";
-
-// we answer to requests with our index::
-app.use((req, res) => res.sendFile(INDEX, { root: __dirname }));
-
-// we create the server object:
-const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-// the socket gets the server object:
-const io = socketIO(server);
-
-let game_active = false;
-const aws_bucket = "https://palavras-cruzadas-server.s3.amazonaws.com/";
-const game_folder = aws_bucket + "old_games/";
-const game_file = aws_bucket + "game.json";
-const config_file = aws_bucket + "config.json"
-
-// load config file
-let config;
-try {
-  config = JSON.parse(fs.readFileSync(config_file, 'utf8'));
-} catch (err) {
-  return console.log(err);
+async function loadConfig(){
+  try {
+    //let s3_config = await s3Download(config_file);
+    //return JSON.parse(s3_config.Body);
+    return JSON.parse(fs.readFileSync(config_file, 'utf8'));
+  } catch (err) {
+    return console.log(err);
+  }
 }
 
-// we start with 0 players
-let player_number = 0;
-
 // a function onStart:
-function initialize(new_game) {
+async function initialize(new_game) {
+
+  // flag the game as active
+  game_active = false;
+
+  // we start with 0 players
+  player_number = 0;
+
   // if we want to reload an existing game
   if (!new_game) {
     // read json and fill our arrays:
-    fs.readFile(game_file, "utf8", (err, data_from_json) => {
+    await fs.readFile(game_file, "utf8", (err, data_from_json) => {
+    // await s3Download(game_file)
+    // .then(data_from_json) => {
       if (err) {
         if (err.code === 'ENOENT') {
           // if no json file, start a new game
@@ -114,6 +219,7 @@ function initialize(new_game) {
           crossword.start_time = pretty_date();
           crossword.init(config.game.width, config.game.height);
           crossword.save(game_file);
+          s3SyncFile(game_file);
           game_active = true;
 
           // let the clients know so they can initialise the game grid
@@ -131,19 +237,24 @@ function initialize(new_game) {
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
-    fs.rename(
+    let game_archived = game_folder + pretty_computer_date() + ".json";
+    await fs.rename(
       game_file,
-      game_folder + pretty_computer_date() + ".json",
+      game_archived,
       function (err) {
         if (err) {
           throw err;
         } else {
+
+          s3SyncFile(game_archived);
+
           crossword.start_time = pretty_date();
 
           // create a new game, initing crossword part:
           crossword.init(config.game.width, config.game.height);
           // start a new json:
           crossword.save(game_file);
+          s3SyncFile(game_file);
           // and mark game as active:
           game_active = true;
 
@@ -157,13 +268,32 @@ function initialize(new_game) {
   }
 }
 
-// to start the game from zero:
-// initialize(true);
+// ----------------------------- MAIN ------------------------------ //
 
-// to continue a half-played game:
-initialize(false);
+
+async function play() {
+
+  // sync with s3 bucket
+  await s3SyncFile(config_file);
+  await s3SyncFile(game_file);
+
+  // load the config
+  config = await loadConfig();
+
+  // to start the game from zero:
+  // await initialize(true);
+
+  // to continue a half-played game:
+  await initialize(false);
+
+  console.log("ready to play!");
+}
+
+play();
+
 
 // we check constantly for changes in the game file:
+/*
 fs.watchFile(
   game_file,
   {
@@ -192,8 +322,10 @@ fs.watchFile(
     console.log("game_file changed!", data);
   }
 );
+*/
 
-// SOCKETS!!!
+// -------------------------- SOCKETS!!! --------------------------- //
+
 // when a client connects:
 io.on("connection", (socket) => {
   // this is the client address:
@@ -214,8 +346,8 @@ io.on("connection", (socket) => {
   socket.emit("fileChanged");
 
   // THE FUNCTION FOR RESETTING THE GAME:
-  socket.on("reset", function (event) {
-    initialize(true);
+  socket.on("reset", async function (event) {
+    await initialize(true);
   });
 
   // THE FUNCTION FOR ADDING WORDS:
@@ -234,6 +366,7 @@ io.on("connection", (socket) => {
 
     if (coube) {
       crossword.save(game_file);
+      s3SyncFile(game_file);
       this.emit("perfect_fit");
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
     } else {
@@ -321,6 +454,7 @@ io.on("connection", (socket) => {
         this.emit("wrong_answer");
       }
       crossword.save(game_file);
+      s3SyncFile(game_file);
     } else {
       // se as palavras eram suas não vale!
       this.emit("cheat_answer");
@@ -338,6 +472,8 @@ io.on("connection", (socket) => {
     socket.emit("connection", false);
   });
 }); // end of socket logic!
+
+// ----------------------------------------------------------------- //
 
 // we're ending!
 console.log("we have reached the end...");
