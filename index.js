@@ -49,7 +49,7 @@ const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 const io = socketIO(server);
 
 // files we are using
-const game_folder = "old_games/";
+const game_folder = "old_games/"; // not used currently, archiving games in root folder to simplify s3 sync
 const game_file = "game.json";
 const config_file = "config.json"
 
@@ -238,7 +238,8 @@ async function initialize(new_game) {
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
-    let game_archived = game_folder + pretty_computer_date() + ".json";
+    ///let game_archived = game_folder + pretty_computer_date() + ".json";
+    let game_archived = pretty_computer_date() + ".json";
     await fs.rename(
       game_file,
       game_archived,
