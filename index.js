@@ -208,6 +208,7 @@ async function initialize(new_game) {
 
   // if we want to reload an existing game
   if (!new_game) {
+    console.log("restoring game...");
     // read json and fill our arrays:
     await fs.readFile(game_file, "utf8", (err, data_from_json) => {
     // await s3Download(game_file)
@@ -245,11 +246,8 @@ async function initialize(new_game) {
         if (err) {
           throw err;
         } else {
-
           s3SyncFile(game_archived);
-
           crossword.start_time = pretty_date();
-
           // create a new game, initing crossword part:
           crossword.init(config.game.width, config.game.height);
           // start a new json:
@@ -293,7 +291,6 @@ play();
 
 
 // we check constantly for changes in the game file:
-/*
 fs.watchFile(
   game_file,
   {
@@ -322,7 +319,7 @@ fs.watchFile(
     console.log("game_file changed!", data);
   }
 );
-*/
+
 
 // -------------------------- SOCKETS!!! --------------------------- //
 
