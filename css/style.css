@@ -26,6 +26,16 @@ button {
   font-size: 1.5em;
 }
 
+.titulo_jogo {
+  font-weight: 900;
+  font-size: 120%;
+  margin-bottom: 0;
+}
+
+.subtitulo {
+  transform: translateY(-50px);
+}
+
 #form_nova_palavra {
   font-size: 150%;
   /* font-size: 30px; */
@@ -100,12 +110,39 @@ form {
   display: flex;
 }
 
+.lista_palavras ul li {
+  list-style-type: none;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.lista_palavras .id_palavra {
+  text-align: center;
+  border: 1px solid black;
+  border-right: none;
+  padding: 5px 10px;
+  line-height: 2;
+  background: #f4f4f4;
+  display: flex;
+  text-decoration: none;
+  color: black;
+  word-break: break-word;
+  min-width: 50px;
+  justify-content: center;
+  align-self: center;
+}
+
 .lista_palavras > div {
   width: 50%;
 }
 
+.lista_palavras #lista_verticais,
+.lista_palavras #lista_horizontais {
+  padding: 0;
+}
+
 .clickable_clue {
-  border: 1px solid red;
+  border: 1px solid gray;
   padding: 5px;
   line-height: 2;
   background: white;
@@ -119,6 +156,9 @@ form {
 .tentativas {
   font-size: 20px;
   margin-left: 10px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }
 
 .clickable_clue.active {
@@ -134,16 +174,20 @@ form {
   margin: 10px 0;
 }
 
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
   color: pink;
 }
-::-moz-placeholder { /* Firefox 19+ */
+::-moz-placeholder {
+  /* Firefox 19+ */
   color: pink;
 }
-:-ms-input-placeholder { /* IE 10+ */
+:-ms-input-placeholder {
+  /* IE 10+ */
   color: pink;
 }
-:-moz-placeholder { /* Firefox 18- */
+:-moz-placeholder {
+  /* Firefox 18- */
   color: pink;
 }
 
@@ -281,6 +325,8 @@ form button:hover {
   margin: 5px;
   /* font-family: monospace; */
   /* font-size: 24px; */
+  font-weight: 900;
+  font-size: 30px;
 }
 
 #div_resolve input,
@@ -311,7 +357,7 @@ p {
     font-family: "dosis";
     font-size: 2.5em;
   }
-  
+
   #mensagens {
     /* height: 150px; */
   }

@@ -76,14 +76,16 @@
           // console.log(element);
           if (element.horizontal === true) {
             h +=
-              '<li><a id="' +
-              "h_" +
+            '<li>' +
+            "<span class='id_palavra'>" +
+            element.label +
+            "</span>" +
+            '<a id="' +
+            "h_" +
               element.label +
               '" class="' +
               className +
               '" href="#" onClick="return false;">' +
-              element.label +
-              " " +
               element.clue +
               "</a>" +
               "<span class='tentativas'>" +
@@ -92,14 +94,16 @@
               "</li>";
           } else {
             v +=
-              '<li><a id="' +
+              '<li>' +
+              "<span class='id_palavra'>" +
+              element.label +
+              "</span>" +
+              '<a id="' +
               "v_" +
               element.label +
               '" class="' +
               className +
               '" href="#" onClick="return false;">' +
-              element.label +
-              " " +
               element.clue +
               "</a>" +
               "<span class='tentativas'>" +
