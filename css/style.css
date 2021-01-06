@@ -116,11 +116,12 @@ form {
   margin-bottom: 5px;
 }
 
-.lista_palavras .id_palavra {
+.lista_palavras .id_palavra,
+.lista_palavras .comp {
   text-align: center;
   border: 1px solid black;
-  border-right: none;
-  padding: 5px 10px;
+  /* border-right: none; */
+  padding: 5px;
   line-height: 2;
   background: #f4f4f4;
   display: flex;
@@ -130,6 +131,8 @@ form {
   min-width: 50px;
   justify-content: center;
   align-self: center;
+  font-size: 80%;
+  margin: 5px;
 }
 
 .lista_palavras > div {
@@ -159,6 +162,7 @@ form {
   justify-content: center;
   display: flex;
   align-items: center;
+  color: darkred;
 }
 
 .clickable_clue.active {
@@ -327,6 +331,7 @@ form button:hover {
   /* font-size: 24px; */
   font-weight: 900;
   font-size: 30px;
+  animation: pulse 2s 1;
 }
 
 #div_resolve input,
@@ -349,6 +354,19 @@ form button:hover {
 p {
   margin: 0;
 }
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(202, 11, 11, 0.76);
+  }
+  70% {
+      box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+  }
+  100% {
+      box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+  }
+}
+
 @media screen and (max-width: 1200px) {
   body,
   input,

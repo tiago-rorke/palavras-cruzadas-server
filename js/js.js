@@ -59,6 +59,18 @@
     nome_lista = "game.json";
     fetch("/" + nome_lista)
       .then((res) => res.json())
+      .then((lista_ordenada) => {
+        lista_ordenada.words.sort(function(obj1, obj2) {
+          // Ascending: first age less than the previous
+          return obj1.label - obj2.label;
+        })
+        lista_ordenada.words.sort(function(obj1, obj2) {
+          // Ascending: first age less than the previous
+          return obj1.solved - obj2.solved;
+        })
+        console.log("lista_ordenada", lista_ordenada);
+        return lista_ordenada;
+      })
       .then((out) => {
         // horizontal words:
         let h = "";
@@ -76,25 +88,28 @@
           // console.log(element);
           if (element.horizontal === true) {
             h +=
-            '<li>' +
-            "<span class='id_palavra'>" +
-            element.label +
-            "</span>" +
-            '<a id="' +
-            "h_" +
+              "<li>" +
+              "<span class='id_palavra'>" +
+              element.label +
+              "</span>" +
+              '<a id="' +
+              "h_" +
               element.label +
               '" class="' +
               className +
               '" href="#" onClick="return false;">' +
               element.clue +
               "</a>" +
+              "<span class='comp'>" +
+              element.word.length +
+              " letras</span>" +
               "<span class='tentativas'>" +
               element.solveattempts +
               "</span>" +
               "</li>";
           } else {
             v +=
-              '<li>' +
+              "<li>" +
               "<span class='id_palavra'>" +
               element.label +
               "</span>" +
@@ -106,6 +121,9 @@
               '" href="#" onClick="return false;">' +
               element.clue +
               "</a>" +
+              "<span class='comp'>" +
+              element.word.length +
+              " letras</span>" +
               "<span class='tentativas'>" +
               element.solveattempts +
               "</span>" +
@@ -181,6 +199,8 @@
       document.getElementById("tab_3").setAttribute("style", "display: flex;");
       // console.log("click?");
       message_box.innerHTML = "<p class='message_top'>resolver uma palavra</p>";
+      var elmnt = document.getElementById("tab_3");
+      elmnt.scrollIntoView();
     } else {
       message_box.innerHTML =
         "<p class='message_top'>só mais um momento...</p>";
@@ -260,6 +280,8 @@
         '<input class="maiusculas" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="resposta?" type="text" id="' +
         e.target.id +
         '"><button id="resolver" type="submit">Enviar</button></div>';
+
+      document.getElementById(e.target.id).focus();
 
       // console.log("click_resolver: " + e.target.id);
     }
