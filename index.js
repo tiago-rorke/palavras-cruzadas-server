@@ -438,6 +438,7 @@ io.on("connection", (socket) => {
         console.log("CORRECT!");
         crossword.words[key_of_try].solved = true;
         crossword.words[key_of_try].solvedtime = pretty_date();
+        crossword.words[key_of_try].solveattempts += 1;
         right_answer = true;
       } else {
         crossword.words[key_of_try].solveattempts += 1;

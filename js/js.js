@@ -103,7 +103,7 @@
               "<span class='comp'>" +
               element.word.length +
               " letras</span>" +
-              "<span class='tentativas'>" +
+              "<span class='tentativas'>tentativas: " +
               element.solveattempts +
               "</span>" +
               "</li>";
@@ -124,7 +124,7 @@
               "<span class='comp'>" +
               element.word.length +
               " letras</span>" +
-              "<span class='tentativas'>" +
+              "<span class='tentativas'>tentativas: " +
               element.solveattempts +
               "</span>" +
               "</li>";

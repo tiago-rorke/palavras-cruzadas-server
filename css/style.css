@@ -130,9 +130,11 @@ form {
   word-break: break-word;
   min-width: 50px;
   justify-content: center;
-  align-self: center;
+  /* align-self: center; */
   font-size: 80%;
-  margin: 5px;
+  /* margin: 5px; */
+  min-height: 50px;
+  align-items: center;
 }
 
 .lista_palavras > div {
@@ -360,10 +362,10 @@ p {
     box-shadow: 0 0 0 0 rgba(202, 11, 11, 0.76);
   }
   70% {
-      box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    box-shadow: 0 0 0 10px rgba(204, 169, 44, 0);
   }
   100% {
-      box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
   }
 }
 
