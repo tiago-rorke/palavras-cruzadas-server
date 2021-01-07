@@ -360,6 +360,7 @@ io.on("connection", (socket) => {
     config.game.width = width;
     config.game.height = height;
     saveConfig();
+    s3SyncFile(config_file);
     await initialize(true);
   });
 
