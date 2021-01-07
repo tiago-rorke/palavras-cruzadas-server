@@ -26,6 +26,15 @@ button {
   font-size: 1.5em;
 }
 
+.imagem_titulo {
+  background-image: url("./palavrilhas.png");
+  min-width: 350px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 150px;
+  background-position: center;
+}
+
 .titulo_jogo {
   font-weight: 900;
   font-size: 120%;
