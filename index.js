@@ -249,6 +249,7 @@ async function initialize(new_game) {
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
+    console.log("starting a new game...");
     ///let game_archived = game_folder + pretty_computer_date() + ".json";
     let game_archived = pretty_computer_date() + ".json";
     // reload the config file, in case we have defined a new game size
@@ -260,6 +261,7 @@ async function initialize(new_game) {
           throw err;
         } else {
           s3SyncFile(game_archived);
+          console.log("current game has been archived!");
           crossword.start_time = pretty_date();
           // create a new game, initing crossword part:
           crossword.init(config.game.width, config.game.height);
@@ -272,8 +274,8 @@ async function initialize(new_game) {
           // let the clients know so they can initialise the game grid
           io.emit("server", { message: "newGame" });
           io.emit("newGame");
+          console.log("new game has started!");
         }
-        console.log("the backup is done!");
       }
     );
   }
