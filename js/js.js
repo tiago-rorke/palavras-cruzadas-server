@@ -68,7 +68,7 @@
           // Ascending: first age less than the previous
           return obj1.solved - obj2.solved;
         })
-        console.log("lista_ordenada", lista_ordenada);
+        // console.log("lista_ordenada", lista_ordenada);
         return lista_ordenada;
       })
       .then((out) => {
