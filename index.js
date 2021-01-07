@@ -185,9 +185,9 @@ function pretty_computer_date() {
   return datestring;
 }
 
-// ----------------------------- INIT ------------------------------ //
+// ---------------------------- CONFIG ----------------------------- //
 
-async function loadConfig(){
+function loadConfig(){
   try {
     //let s3_config = await s3Download(config_file);
     //return JSON.parse(s3_config.Body);
@@ -196,6 +196,17 @@ async function loadConfig(){
     return console.log(err);
   }
 }
+
+function saveConfig() {
+  fs.writeFile(config_file, JSON.stringify(config, null, 1), (err) => {
+      if (err) return console.log(err);
+    });
+  return true;
+}
+
+
+// ----------------------------- INIT ------------------------------ //
+
 
 // a function onStart:
 async function initialize(new_game) {
@@ -240,6 +251,7 @@ async function initialize(new_game) {
   else {
     ///let game_archived = game_folder + pretty_computer_date() + ".json";
     let game_archived = pretty_computer_date() + ".json";
+    // reload the config file, in case we have defined a new game size
     await fs.rename(
       game_file,
       game_archived,
@@ -344,7 +356,10 @@ io.on("connection", (socket) => {
   socket.emit("fileChanged");
 
   // THE FUNCTION FOR RESETTING THE GAME:
-  socket.on("reset", async function (event) {
+  socket.on("reset", async function (width, height) {
+    config.game.width = width;
+    config.game.height = height;
+    saveConfig();
     await initialize(true);
   });
 
