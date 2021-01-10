@@ -1,0 +1,19 @@
+<html>
+  <body>
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <div id="twitch"></div>
+    <script type="text/javascript">
+      var twitch_options = {
+        width: "100%",
+        height: "100%",
+        channel: "palavrilhas",
+        parent: ["www.palavrilhas.com", "palavrilhas.com", "palavras-cruzadas-server.herokuapp.com", "localhost"]
+      };
+      var twitch_player = new Twitch.Player("twitch", twitch_options);
+      //player.setVolume(0.5);
+    </script>
+  </body>
+</html>
+
+<!-- https://gist.github.com/russfeld/0878b1f8eaf7409136b9125ce5e1458f -->
+<!-- russfeld/picam-stream.sh  -->
