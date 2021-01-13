@@ -403,14 +403,6 @@ p {
     font-size: 2.5em;
   }
 
-  #mensagens {
-    /* height: 150px; */
-  }
-
-  #conteudo {
-    /* margin-top: 150px; */
-  }
-
   .tabs {
     width: 95%;
     margin: 5px auto;
@@ -432,8 +424,8 @@ p {
   #form_nova_palavra {
     font-size: 40px;
   }
-  
-/* .twitch {
+
+  /* .twitch {
   width: 98%;
   margin: 0 auto;
   min-height: 600px;
