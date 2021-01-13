@@ -178,6 +178,7 @@ internal.Crossword = class {
             this.label_index = w.label;
          }
       }
+
       this.update();
 
       // not sure if should be an async function...
@@ -188,7 +189,7 @@ internal.Crossword = class {
    }
 
    save(file) {
-      fs.writeFile(
+      fs.writeFileSync(
          file,
          JSON.stringify(
             {
@@ -288,8 +289,21 @@ internal.Crossword = class {
       }
    }
 
+   undrawGrid() {
+      for (let x=0; x<this.width; x++) {
+         for (let y=0; y<this.height; y++) {
+            if (this.grid[x][y].letter_drawing == 0) {
+               this.grid[x][y].letter_drawing = 1;
+            }
+            if(this.grid[x][y].label_drawing == 0) {
+               this.grid[x][y].label_drawing = 1;
+            }
+         }
+      }
+   }
+
    saveGrid(file) {
-      fs.writeFile(
+      fs.writeFileSync(
          file,
          JSON.stringify(
             {
