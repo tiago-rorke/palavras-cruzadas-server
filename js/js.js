@@ -11,7 +11,19 @@
   let can_play = false;
 
   // the default timer:
-  const timer = 2;
+  let timer = 2;
+
+  // the cheater timer:
+  let cheater_timer = 15;
+
+  fetch("/config.json")
+  .then((res) => res.json())
+  .then((config) => {
+    timer = config.site.timer;
+    console.log("timer -> ", timer);
+    cheater_timer = config.site.cheater_timer;
+    console.log("cheater_timer -> ", cheater_timer);
+    })
 
   const message_box = document.getElementById("mensagens");
 
@@ -256,7 +268,7 @@
       // setCounter(timer);
     } else {
       message_box.innerHTML =
-        "<p class='message_top small_text'>mínimos e máximos: palavras de duas a 20 letras, de a-z, sem espaços, os acentos são ignorados<br>e a explicação tem de ter mais de 5 caracteres!</p>";
+        "<p class='message_top small_text'>as palavras devem ter entre 2 e 20 letras, de A a Z, sem espaços nem acentos<br>a explicação tem de ter mais de 5 caracteres</p>";
     }
   };
 
@@ -330,7 +342,7 @@
     //   console.log("essa palavra já existe...");
     // } else {
     message_box.innerHTML =
-      "<p class='message_top'>ups, essa palavra não coube no jogo...</p>";
+      "<p class='message_top'>ups, essa palavra não coube no jogo...<br>tente novamente!</p>";
     console.log("ups, essa palavra não coube no jogo...");
     // }
     document.getElementById("tab_2").setAttribute("style", "display: none;");
@@ -352,7 +364,7 @@
   // quando se recebe uma mensagem de 'resposta errada!!'
   socket.on("wrong_answer", () => {
     message_box.innerHTML =
-      "<p class='message_top'>ohhhh - falhou! melhor sorte para a próxima...</p>";
+      "<p class='message_top'>oh, falhou! tente outra vez</p>";
     console.log("falhei...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
@@ -366,7 +378,7 @@
     console.log("fui apanhado a aldrabar...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(30);
+    setCounter(cheater_timer);
   });
 
   // we have reached the end of the js!:

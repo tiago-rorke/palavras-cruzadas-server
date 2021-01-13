@@ -60,7 +60,7 @@ let config;
 let game_active;
 
 // for counting players
-let player_number;
+let player_number = 0, max_player_number = 0;
 
 
 // ---------------------- AWS S3 for file storage ------------------ //
@@ -352,7 +352,7 @@ io.on("connection", (socket) => {
   player_number++;
 
   // and keep the global max_player counter updated:
-  if(max_player_number < player_number) {
+  if(max_player_number <= player_number) {
     max_player_number = player_number;
   }
   console.log("max_player_number:", max_player_number);
