@@ -1,5 +1,6 @@
 .nvmrc
 game.json
+config.json
 
 # Logs
 logs

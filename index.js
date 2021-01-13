@@ -228,15 +228,8 @@ async function initialize(new_game) {
         if (err.code === 'ENOENT') {
           // if no json file, start a new game
           console.log('no game file found, starting a new game');
-          crossword.start_time = pretty_date();
-          crossword.init(config.game.width, config.game.height);
-          crossword.save(game_file);
-          s3SyncFile(game_file);
-          game_active = true;
-
-          // let the clients know so they can initialise the game grid
-          io.emit("server", { message: "newGame" });
-          io.emit("newGame");
+          newGame();
+          console.log("new game has started!");
         } else {
           console.error(err);
           throw err;
@@ -262,24 +255,32 @@ async function initialize(new_game) {
         } else {
           s3SyncFile(game_archived);
           console.log("current game has been archived!");
-          crossword.start_time = pretty_date();
-          // create a new game, initing crossword part:
-          crossword.init(config.game.width, config.game.height);
-          // start a new json:
-          crossword.save(game_file);
-          s3SyncFile(game_file);
-          // and mark game as active:
-          game_active = true;
-
-          // let the clients know so they can initialise the game grid
-          io.emit("server", { message: "newGame" });
-          io.emit("newGame");
+          newGame();
           console.log("new game has started!");
         }
       }
     );
   }
 }
+
+// -------------------------- GAME STATE --------------------------- //
+
+function newGame() {
+
+  crossword.start_time = pretty_date();
+  console.log(crossword.start_time);
+  // create a new game, initing crossword part:
+  crossword.init(config.game.width, config.game.height);
+  // start a new json:
+  crossword.save(game_file);
+  s3SyncFile(game_file);
+  // and mark game as active:
+  game_active = true;
+  // let the clients know so they can initialise the game grid
+  io.emit("server", { message: "newGame" });
+  io.emit("newGame");
+}
+
 
 // ----------------------------- MAIN ------------------------------ //
 
@@ -359,6 +360,7 @@ io.on("connection", (socket) => {
 
   // THE FUNCTION FOR RESETTING THE GAME:
   socket.on("reset", async function (width, height) {
+    console.log("starting a new game...", width, height);
     config.game.width = width;
     config.game.height = height;
     saveConfig();
