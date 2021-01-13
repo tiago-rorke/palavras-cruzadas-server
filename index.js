@@ -217,6 +217,9 @@ async function initialize(new_game) {
   // we start with 0 players
   player_number = 0;
 
+  // we start with 0 players
+  max_player_number = 0;
+
   // if we want to reload an existing game
   if (!new_game) {
     console.log("restoring game...");
@@ -347,7 +350,12 @@ io.on("connection", (socket) => {
   console.log(pretty_date(), " -> New connection from " + address);
   // and we increment our player counter:
   player_number++;
-  // console.log("players:", player_number);
+
+  // and keep the global max_player counter updated:
+  if(max_player_number < player_number) {
+    max_player_number = player_number;
+  }
+  console.log("max_player_number:", max_player_number);
 
   // inform player of connection state!
   socket.emit("connection", true);

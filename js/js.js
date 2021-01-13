@@ -314,7 +314,8 @@
   // if the word fits...
   socket.on("perfect_fit", () => {
     message_box.innerHTML =
-      "<p class='message_top'>Obrigado por participar - a sua palavra foi adicionada ao jogo!</p>";
+      "<p class='message_top'>Obrigado por participar</p>" + 
+      "<p class='message_top'>Dentro de momentos a máquina vai adicionar a palavra</p>";
     console.log("a palavra foi acrescentada ao jogo!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
@@ -340,7 +341,8 @@
   // quando se recebe uma mensagem de 'resposta certa!!'
   socket.on("right_answer", () => {
     message_box.innerHTML =
-      "<p class='message_top'>PARABÉNS - acertou na resposta certa!</p>";
+      "<p class='message_top'>Parabéns, acertou!</p>" + 
+      "<p class='message_top'>Dentro de momentos a máquina vai escrever a palavra!</p>";
     console.log("acertámos numa palavra!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
