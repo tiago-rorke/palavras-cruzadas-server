@@ -367,14 +367,11 @@ p {
 }
 
 .twitch {
-  border: 1px dotted purple;
-  width: 80%;
-  margin: 0 auto;
-  min-height: 600px;
-  /* position: absolute;
-  top: 0;
-  left: 0; */
-  /* z-index: -1; */
+  border: 0px dotted purple;
+  /* width: 40%; */
+  /* margin: 0 auto; */
+  min-height: 400px;
+  display: flex;
 }
 
 .twitch .twitch-video iframe {
@@ -431,4 +428,12 @@ p {
   margin: 0 auto;
   min-height: 600px;
 } */
+}
+
+@media screen and (max-width: 1200px) {
+  .twitch {
+    border: 0px dotted purple;
+    width: 100%;
+    min-height: 500px;
+  }
 }
