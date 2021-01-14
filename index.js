@@ -3,6 +3,10 @@
 // we're starting!
 console.log("welcome to palavras cruzadas");
 
+// to add variables in .env to process.env
+const dotenv = require("dotenv");
+dotenv.config();
+
 // to have a server:
 const express = require("express");
 // to have sockets:
@@ -70,7 +74,9 @@ const s3 = new aws.S3({
   secretAccessKey: process.env.AWSSecretKey,
   Bucket: process.env.S3_BUCKET_NAME
 });
-const aws_bucket = "palavras-cruzadas-server"
+
+// not sure why we need to pass the bucket name again, but hey
+const aws_bucket = process.env.S3_BUCKET_NAME;
 
 async function s3Download(file) {
   return new Promise((resolve, reject) => {
@@ -134,12 +140,16 @@ async function s3SyncFile(file) {
 }
 
 async function s3test() {
+  console.log("s3 upload test...");
   let updata = await s3Upload("test.txt", "hello s3");
   console.log(updata);
+  console.log("s3 download test...")
   let data = await s3Download("config.json");
   let data_p = JSON.parse(data.Body);
   console.log(data_p);
 }
+
+// for testing the s3 configuration
 //s3test();
 
 
@@ -211,15 +221,6 @@ function saveConfig() {
 // a function onStart:
 async function initialize(new_game) {
 
-  // flag the game as active
-  game_active = false;
-
-  // we start with 0 players
-  player_number = 0;
-
-  // we start with 0 players
-  max_player_number = 0;
-
   // if we want to reload an existing game
   if (!new_game) {
     console.log("restoring game...");
@@ -240,8 +241,6 @@ async function initialize(new_game) {
       }
       crossword.load(data_from_json, true);
     });
-    // and mark game as active:
-    game_active = true;
   }
   // if we want to start a new game, backup the old one and start anew:
   else {
@@ -270,18 +269,40 @@ async function initialize(new_game) {
 
 function newGame() {
 
-  crossword.start_time = pretty_date();
-  console.log(crossword.start_time);
   // create a new game, initing crossword part:
   crossword.init(config.game.width, config.game.height);
+  // set the start time
+  crossword.start_time = pretty_date();
+  console.log("game start time is:", crossword.start_time);
   // start a new json:
   crossword.save(game_file);
   s3SyncFile(game_file);
+
   // and mark game as active:
   game_active = true;
+  // we start with 0 players
+  player_number = 0;
+  // we start with 0 players
+  max_player_number = 0;
+
   // let the clients know so they can initialise the game grid
   io.emit("server", { message: "newGame" });
   io.emit("newGame");
+}
+
+function endGame() {
+
+  crossword.end_time = pretty_date();
+  console.log("game end time is:", crossword.end_time);
+  crossword.save(game_file);
+  s3SyncFile(game_file);
+
+  // and mark game as inactive:
+  game_active = false;
+
+  // let the clients know so they can draw the end timestamp
+  io.emit("server", { message: "endGame" });
+  io.emit("endGame");
 }
 
 
@@ -365,6 +386,12 @@ io.on("connection", (socket) => {
 
   // always send an updated word list:
   socket.emit("fileChanged");
+
+  // THE FUNCTION FOR ENDING THE GAME:
+  socket.on("endGame", function () {
+    console.log("ending the current game...");
+    endGame();
+  });
 
   // THE FUNCTION FOR RESETTING THE GAME:
   socket.on("reset", async function (width, height) {
