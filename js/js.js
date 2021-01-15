@@ -330,7 +330,7 @@
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setTimeout(function () {
       setCounter(timer);
-    }, congrats_timer);
+    }, congrats_timer * 1000);
   });
 
   // if the word doesn't fit...
@@ -348,7 +348,7 @@
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setTimeout(function () {
       setCounter(timer);
-    }, congrats_timer);
+    }, congrats_timer * 1000);
   });
 
   // quando se recebe uma mensagem de 'resposta certa!!'
@@ -360,7 +360,7 @@
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setTimeout(function () {
       setCounter(timer);
-    }, congrats_timer);
+    }, congrats_timer * 1000);
   });
 
   // quando se recebe uma mensagem de 'resposta errada!!'
@@ -372,7 +372,7 @@
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setTimeout(function () {
       setCounter(timer);
-    }, congrats_timer);
+    }, congrats_timer * 1000);
   });
 
   // quando se recebe uma mensagem de 'resposta aldrabada!!'
@@ -384,7 +384,7 @@
     document.getElementById("tab_3").setAttribute("style", "display: none;");
     setTimeout(function () {
       setCounter(cheater_timer);
-    }, congrats_timer);
+    }, congrats_timer * 1000);
   });
 
   // we have reached the end of the js!:
