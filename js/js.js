@@ -16,14 +16,17 @@
   // the cheater timer:
   let cheater_timer = 15;
 
+  // the congrats timer:
+  let congrats_timer = 5;
+
   fetch("/config.json")
-  .then((res) => res.json())
-  .then((config) => {
-    timer = config.site.timer;
-    console.log("timer -> ", timer);
-    cheater_timer = config.site.cheater_timer;
-    console.log("cheater_timer -> ", cheater_timer);
-    })
+    .then((res) => res.json())
+    .then((config) => {
+      timer = config.site.timer;
+      console.log("timer -> ", timer);
+      cheater_timer = config.site.cheater_timer;
+      console.log("cheater_timer -> ", cheater_timer);
+    });
 
   const message_box = document.getElementById("mensagens");
 
@@ -72,14 +75,14 @@
     fetch("/" + nome_lista)
       .then((res) => res.json())
       .then((lista_ordenada) => {
-        lista_ordenada.words.sort(function(obj1, obj2) {
+        lista_ordenada.words.sort(function (obj1, obj2) {
           // Ascending: first age less than the previous
           return obj1.label - obj2.label;
-        })
-        lista_ordenada.words.sort(function(obj1, obj2) {
+        });
+        lista_ordenada.words.sort(function (obj1, obj2) {
           // Ascending: first age less than the previous
           return obj1.solved - obj2.solved;
-        })
+        });
         // console.log("lista_ordenada", lista_ordenada);
         return lista_ordenada;
       })
@@ -261,11 +264,6 @@
 
       // and log it, just because:
       console.log("mensagem: " + word_value.toUpperCase(), clue_value);
-
-      // message_box.innerHTML =
-      //   "<p class='message_top'>Obrigado por participar - a sua palavra foi adicionada ao jogo!</p>";
-      // and reset the counter:
-      // setCounter(timer);
     } else {
       message_box.innerHTML =
         "<p class='message_top small_text'>as palavras devem ter entre 2 e 20 letras, de A a Z, sem espaços nem acentos<br>a explicação tem de ter mais de 5 caracteres</p>";
@@ -330,7 +328,9 @@
     console.log("a palavra foi acrescentada ao jogo!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(timer);
+    setTimeout(function () {
+      setCounter(timer);
+    }, congrats_timer);
   });
 
   // if the word doesn't fit...
@@ -346,7 +346,9 @@
     // }
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(timer);
+    setTimeout(function () {
+      setCounter(timer);
+    }, congrats_timer);
   });
 
   // quando se recebe uma mensagem de 'resposta certa!!'
@@ -356,7 +358,9 @@
     console.log("acertámos numa palavra!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(timer);
+    setTimeout(function () {
+      setCounter(timer);
+    }, congrats_timer);
   });
 
   // quando se recebe uma mensagem de 'resposta errada!!'
@@ -366,7 +370,9 @@
     console.log("falhei...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(timer);
+    setTimeout(function () {
+      setCounter(timer);
+    }, congrats_timer);
   });
 
   // quando se recebe uma mensagem de 'resposta aldrabada!!'
@@ -376,7 +382,9 @@
     console.log("fui apanhado a aldrabar...!!!");
     document.getElementById("tab_2").setAttribute("style", "display: none;");
     document.getElementById("tab_3").setAttribute("style", "display: none;");
-    setCounter(cheater_timer);
+    setTimeout(function () {
+      setCounter(cheater_timer);
+    }, congrats_timer);
   });
 
   // we have reached the end of the js!:
