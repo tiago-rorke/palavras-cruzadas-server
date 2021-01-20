@@ -200,6 +200,12 @@
       document.getElementById("form_nova_palavra").focus();
       // console.log("click?");
       message_box.innerHTML = "<p class='message_top'>sugerir uma palavra</p>";
+      var elmnt = document.getElementById("tab_2");
+      // elmnt.scrollIntoView();
+      const yOffset = -205; 
+      const y = elmnt.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+
     } else {
       message_box.innerHTML =
         "<p class='message_top'>só mais um momento...</p>";
@@ -215,7 +221,10 @@
       // console.log("click?");
       message_box.innerHTML = "<p class='message_top'>resolver uma palavra</p>";
       var elmnt = document.getElementById("tab_3");
-      elmnt.scrollIntoView();
+      // elmnt.scrollIntoView();
+      const yOffset = -205; 
+      const y = elmnt.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
     } else {
       message_box.innerHTML =
         "<p class='message_top'>só mais um momento...</p>";
@@ -223,7 +232,8 @@
   };
 
   // suggesting a new word + clue:
-  document.getElementById("suggest").onclick = function enviarSugestao() {
+  document.getElementById("suggest").onclick = function (e) {
+    e.preventDefault();
     // we start from a dirty word
     let clean_word = false;
     // we htmlstrip both word and clue
@@ -272,12 +282,15 @@
 
   // clicking things actions:
   document.addEventListener("click", function (e) {
-    e.preventDefault();
 
     // console.log(e.target);
 
     // when someone clicks a clue to try to solve it:
     if (e.target && e.target.className == "clickable_clue active") {
+      e.preventDefault();
+      // console.log("---", e.querySelector('.comp'))
+      // var productList = e.target;
+      // console.log("productList!", productList);
       // console.log("pista!");
       // console.log("message_box: ", message_box);
 
@@ -287,6 +300,9 @@
         "<p class='pergunta'>" +
         e.target.text +
         "?</p>" +
+        "<span class='comp'>" +
+        e.target.text.length +
+        " letras</span>" + 
         '<input class="maiusculas" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="resposta?" type="text" id="' +
         e.target.id +
         '"><button id="resolver" type="submit">Enviar</button></div>';
@@ -298,6 +314,7 @@
 
     //and when you click submit, we sendi it!...
     if (e.target && e.target.id == "resolver") {
+      e.preventDefault();
       // i send the proposal to the server (id=orientation+label; value=word_try):
       socket.emit(
         "solve",
@@ -314,11 +331,32 @@
 
     // a hidden reset button...
     if (e.target && e.target.id == "reset") {
+      e.preventDefault();
       console.log("envio tentativa de resetar o jogo todo...");
       socket.emit("reset");
 
       return false;
     }
+
+
+    let about = document.getElementById("aboutdiv");
+
+    // opens about dialog...
+    if (e.target && e.target.id == "openAbout") {
+      e.preventDefault();
+      about.style.display = 'block';;
+      console.log("abro o about");
+      return false;
+    }
+    
+    // closes about dialog...
+    if (e.target && e.target.id == "fecharAbout") {
+      e.preventDefault();
+      about.style.display = 'none';;
+      console.log("fecho o about");
+      return false;
+    }
+
   });
 
   // if the word fits...

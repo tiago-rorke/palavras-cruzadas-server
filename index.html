@@ -10,6 +10,11 @@
   </head>
 
   <body>
+    <div class="links">
+      <div><a href="#" id="openAbout">àcerca deste jogo</a></div>
+      <div><a id="insta" class="img_insta" href="https://www.instagram.com/jogo_palavrilhas/" target="_blank">instagram</a></div>
+      <!-- <div><a class="img_insta" href="https://www.instagram.com/jogo_palavrilhas/" target="_blank"><img src="./css/logo_instagram.png" alt="Ver instagram"></a></div> -->
+    </div>
     <div class="contem_tudo">
       <div id="mensagens"></div>
 
@@ -86,13 +91,6 @@
         <div class="tabs" id="tab_5">
           <div class="interior_tabs">
             <div class="explica">
-              <p>
-                <a href="https://www.oma-oma.com/"
-                  ><img src="./css/logo_oma.png" alt="OMA" /></a
-                ><a href="https://mill.pt/"
-                  ><img src="./css/logo_mill.png" alt="Makers in Little Lisbon"
-                /></a>
-              </p>
               <div id="connection"><span class="off"></span></div>
               <p class="players_container">
                 jogadores ligados: <span id="player_number"></span>
@@ -102,6 +100,32 @@
           </div>
         </div>
       </div>
+    </div>
+    <div id="aboutdiv" style="display: none;">
+      <div>
+        <h1>Palavrilhas</h1>
+        <h2>Cruzamento Anónimo de Palavras</h2>
+        <p>Uma composição visual generativa, interactiva e colaborativa, baseada no jogo das palavras cruzadas. O jogo vai sendo desenhado por uma <i>plotter</i> à medida que os jogadores, através de uma plataforma <i>online</i>, enviam novas pistas ou resolvem as existentes. Os movimentos da <i>plotter</i> são filmados e podem ser visionados em <i>live stream</i> no <i>website</i> do jogo.</p>
+        <br>
+        <p>Os jogadores conectam-se à <i>plotter</i>, através do telefone ou do computador, e podem:
+          <ol>
+            <li>sugerir uma palavra e a pista correspondente. A pista é adicionada ao índice do jogo e a <i>plotter</i> desenha os quadrados correspondentes à palavra.</li>
+            <li>resolver uma pista já existente. Se a palavra estiver correcta, a <i>plotter</i> vai escrevê-la nos quadrados vazios correspondentes.</li>
+          </ol>
+        </p>
+        <p>O objectivo é convidar à interacção anónima entre os participantes através de um jogo familiar, mas de uma forma que permita novas narrativas, diálogos entre jogadores, ou apenas disparates lúdicos, para criação de composições únicas.</p>
+        <br>
+        <br>
+        <p>
+          <a href="https://www.oma-oma.com/"
+            ><img src="./css/logo_oma.png" alt="OMA" /></a
+          ><a href="https://mill.pt/"
+            ><img src="./css/logo_mill.png" alt="Makers in Little Lisbon"
+          /></a>
+        </p>
+
+      </div>
+      <a href="#" id="fecharAbout">X</a>
     </div>
     <script src="./js/js.js"></script>
   </body>
