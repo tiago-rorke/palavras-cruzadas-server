@@ -280,10 +280,10 @@ function newGame() {
 
   // and mark game as active:
   game_active = true;
-  // we start with 0 players
-  player_number = 0;
-  // we start with 0 players
+  // reset the max player
   max_player_number = 0;
+  // update the player counter:
+  player_number = io.engine.clientsCount;
 
   // let the clients know so they can initialise the game grid
   io.emit("server", { message: "newGame" });
@@ -369,8 +369,8 @@ io.on("connection", (socket) => {
   var address = socket.conn.remoteAddress;
   // we show a message when someone connects:
   console.log(pretty_date(), " -> New connection from " + address);
-  // and we increment our player counter:
-  player_number++;
+  // update the player counter:
+  player_number = io.engine.clientsCount;
 
   // and keep the global max_player counter updated:
   if(max_player_number <= player_number) {
@@ -518,7 +518,8 @@ io.on("connection", (socket) => {
   // and something when a client disconnects:
   socket.on("disconnect", () => {
     console.log(pretty_date(), " -> Lost connection from " + address);
-    player_number--;
+    // update the player counter:
+    player_number = io.engine.clientsCount;
     // console.log("players:", player_number);
     // inform players of number of peers!
     io.emit("player_number", player_number);
