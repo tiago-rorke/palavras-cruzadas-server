@@ -318,8 +318,8 @@
       // i send the proposal to the server (id=orientation+label; value=word_try):
       socket.emit(
         "solve",
-        document.getElementById("div_resolve").childNodes[1].id,
-        document.getElementById("div_resolve").childNodes[1].value.toUpperCase()
+        document.getElementById("div_resolve").childNodes[2].id,
+        document.getElementById("div_resolve").childNodes[2].value.toUpperCase()
       );
       // console.log(
       //   "envio tentativa de resposta...",
@@ -348,7 +348,13 @@
       console.log("abro o about");
       return false;
     }
-    
+    if (e.target && e.target.id == "openComoJogar") {
+      e.preventDefault();
+      about.style.display = 'block';;
+      console.log("abro o about");
+      return false;
+    }
+
     // closes about dialog...
     if (e.target && e.target.id == "fecharAbout") {
       e.preventDefault();
