@@ -447,6 +447,10 @@ form button:hover {
   /* height: 40px; */
 }
 
+#div_resolve .comp {
+  visibility: hidden;
+}
+
 .maiusculas {
   text-transform: uppercase;
 }
