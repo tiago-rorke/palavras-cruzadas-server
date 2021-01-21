@@ -350,7 +350,13 @@
       console.log("abro o about");
       return false;
     }
-    
+    if (e.target && e.target.id == "openComoJogar") {
+      e.preventDefault();
+      about.style.display = 'block';;
+      console.log("abro o about");
+      return false;
+    }
+
     // closes about dialog...
     if (e.target && e.target.id == "fecharAbout") {
       e.preventDefault();

@@ -29,15 +29,15 @@ button {
 .links {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   z-index: 13;
   /* display: flex; */
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .links div {
-  margin-top: 10px;
-  margin-right: 10px;
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 .img_insta:hover > img {
@@ -46,7 +46,7 @@ button {
 
 .links a {
   text-decoration: none;
-  color: gray;
+  color: #333;
 }
 
 .links a:hover {
@@ -109,9 +109,31 @@ div {
 }
 
 #aboutdiv h1,
-#aboutdiv h2 {
-  display: inline-block;
-  margin-right: 15px;
+#aboutdiv h2,
+#aboutdiv h3 {
+  /*display: inline-block;*/
+  /*margin-right: 15px;*/
+  text-align: center;
+}
+
+#aboutdiv .logos {
+  text-align: center;
+}
+#aboutdiv .logos img {
+  margin: 0 20px;
+}
+
+#aboutdiv p {
+  margin-bottom: 20px;
+}
+
+#aboutdiv a {
+  text-decoration: none;
+  color: #666;
+}
+
+#aboutdiv a:hover {
+  text-decoration: underline;
 }
 
 #fecharAbout {
@@ -124,6 +146,10 @@ div {
   display: flex;
   text-align: center;
   justify-content: center;
+  font-family: sans-serif;
+  font-weight: 900;
+  text-decoration: none;
+  color: grey;
 }
 
 .tabs {
@@ -419,6 +445,10 @@ form button:hover {
   outline: none;
   color: black;
   /* height: 40px; */
+}
+
+#div_resolve .comp {
+  visibility: hidden;
 }
 
 .maiusculas {
