@@ -295,14 +295,16 @@
       // console.log("message_box: ", message_box);
 
       // we create a div to hold the question and a form for the answer-try:
+      console.log(document.getElementById(e.target.id).nextElementSibling);
       message_box.innerHTML =
         '<div id="div_resolve">' +
         "<p class='pergunta'>" +
         e.target.text +
         "?</p>" +
         "<span class='comp'>" +
-        e.target.text.length +
-        " letras</span>" + 
+        // e.target.text.length +
+        document.getElementById(e.target.id).nextElementSibling.textContent +
+        " </span>" + 
         '<input class="maiusculas" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="resposta?" type="text" id="' +
         e.target.id +
         '"><button id="resolver" type="submit">Enviar</button></div>';
@@ -318,8 +320,8 @@
       // i send the proposal to the server (id=orientation+label; value=word_try):
       socket.emit(
         "solve",
-        document.getElementById("div_resolve").childNodes[1].id,
-        document.getElementById("div_resolve").childNodes[1].value.toUpperCase()
+        document.getElementById("div_resolve").childNodes[2].id,
+        document.getElementById("div_resolve").childNodes[2].value.toUpperCase()
       );
       // console.log(
       //   "envio tentativa de resposta...",
