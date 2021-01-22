@@ -32,12 +32,16 @@ button {
   left: 0;
   z-index: 13;
   /* display: flex; */
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .links div {
-  margin-top: 15px;
+  margin:15px;
   margin-left: 15px;
+  margin-bottom: 15px;
+  /*width: 70px;*/
+  background-color: #888;
+  padding: 7px;
 }
 
 .img_insta:hover > img {
@@ -46,7 +50,7 @@ button {
 
 .links a {
   text-decoration: none;
-  color: #333;
+  color: white;
 }
 
 .links a:hover {
@@ -102,6 +106,7 @@ div {
   margin: 5%;
   z-index: 9;
   overflow: auto;
+  border: 1px solid #000;
 }
 
 #aboutdiv > div {
