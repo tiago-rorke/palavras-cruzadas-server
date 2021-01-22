@@ -56,6 +56,8 @@ const io = socketIO(server);
 const game_folder = "old_games/"; // not used currently, archiving games in root folder to simplify s3 sync
 const game_file = "game.json";
 const config_file = "config.json"
+const log_file = "events.log"
+const log_nosploiers = "events_nosploilers.log"
 
 // for storing vars from config file
 let config;
@@ -151,6 +153,17 @@ async function s3test() {
 
 // for testing the s3 configuration
 //s3test();
+
+
+// --------------------------- LOG FILE ---------------------------- //
+
+function appendLog(file, data) {
+  fs.appendFile(file, data + '\n', function (err) {
+    if (err) throw err;
+  });
+
+  s3SyncFile(file);
+}
 
 
 // -------------------------- TIMESTAMPS --------------------------- //
@@ -422,8 +435,11 @@ io.on("connection", (socket) => {
       s3SyncFile(game_file);
       this.emit("perfect_fit");
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
+      appendLog(log_file, datestring + ", NEW_WORD, " + address + ", " + event.word + ", " +  event.clue);
+      appendLog(log_nosploiers, datestring + ", NEW_WORD, " + address + ", " + event.word.length + ", " +  event.clue);
     } else {
       this.emit("nofit");
+      appendLog(log_file, datestring + ", NEW_WORD_FAIL, " + address + ", " + event.word + ", " +  event.clue);
     }
   });
 
@@ -487,16 +503,21 @@ io.on("connection", (socket) => {
       }
       if (
         latinize(crossword.words[key_of_try].word.toUpperCase()) ===
-          latinize(word.toUpperCase()) &&
+        latinize(word.toUpperCase()) &&
         crossword.words[key_of_try].player !== address
       ) {
         console.log("CORRECT!");
         crossword.words[key_of_try].solved = true;
-        crossword.words[key_of_try].solvedtime = pretty_date();
+        let datestring = pretty_date()
+        crossword.words[key_of_try].solvedtime = datestring;
         crossword.words[key_of_try].solveattempts += 1;
         right_answer = true;
+        appendLog(log_file, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
       } else {
+        let datestring = pretty_date()
         crossword.words[key_of_try].solveattempts += 1;
+        appendLog(log_file, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
+        appendLog(log_nosploiers, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
       }
     }
 
