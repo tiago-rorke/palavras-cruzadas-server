@@ -105,11 +105,25 @@ async function s3test() {
 
 async function getLogs() {
   console.log("downloading", log_file);
-  await s3Download(log_file);
-  console.log("done");
+  let s3_data = await s3Download(log_file);
+  await fs.writeFile(log_file, s3_data.Body, (err) => {
+      if (err) {
+        return console.log(err);
+      } else {
+        console.error("done");
+      }
+    }
+  );
   console.log("downloading", log_nospoilers);
-  await s3Download(log_nospoilers);
-  console.log("done");
+  s3_data = await s3Download(log_nospoilers);
+  await fs.writeFile(log_nospoilers, s3_data.Body, (err) => {
+      if (err) {
+        return console.log(err);
+      } else {
+        console.error("done");
+      }
+    }
+  );
 }
 
 
