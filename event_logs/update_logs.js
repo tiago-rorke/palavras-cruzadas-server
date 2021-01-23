@@ -13,9 +13,6 @@ const aws = require('aws-sdk');
 const log_file = "events.log"
 const log_nospoilers = "events_nospoilers.log"
 
-s3SyncFile(log_file);
-s3SyncFile(log_nospoilers);
-
 
 // ---------------------- AWS S3 for file storage ------------------ //
 
@@ -101,3 +98,19 @@ async function s3test() {
 
 // for testing the s3 configuration
 //s3test();
+
+
+// ----------------------------------------------------------------- //
+
+
+async function getLogs() {
+  console.log("downloading", log_file);
+  await s3Download(log_file);
+  console.log("done");
+  console.log("downloading", log_nospoilers);
+  await s3Download(log_nospoilers);
+  console.log("done");
+}
+
+
+getLogs();
