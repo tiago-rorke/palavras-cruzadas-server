@@ -327,6 +327,9 @@ async function play() {
   // sync with s3 bucket
   await s3SyncFile(config_file);
   await s3SyncFile(game_file);
+  await s3SyncFile(log_file);
+  await s3SyncFile(log_nospoilers);
+
 
   // load the config
   config = await loadConfig();
