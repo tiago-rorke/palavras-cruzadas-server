@@ -515,13 +515,13 @@ io.on("connection", (socket) => {
         crossword.words[key_of_try].solvedtime = datestring;
         crossword.words[key_of_try].solveattempts += 1;
         right_answer = true;
-        appendLog(log_file, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
-        appendLog(log_nospoilers, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
+        appendLog(log_file, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
+        appendLog(log_nospoilers, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
       } else {
         let datestring = pretty_date()
         crossword.words[key_of_try].solveattempts += 1;
-        appendLog(log_file, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
-        appendLog(log_nospoilers, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
+        appendLog(log_file, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
+        appendLog(log_nospoilers, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
       }
     }
 
