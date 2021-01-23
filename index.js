@@ -57,7 +57,7 @@ const game_folder = "old_games/"; // not used currently, archiving games in root
 const game_file = "game.json";
 const config_file = "config.json"
 const log_file = "events.log"
-const log_nosploiers = "events_nosploilers.log"
+const log_nospoilers = "events_nospoilers.log"
 
 // for storing vars from config file
 let config;
@@ -436,7 +436,7 @@ io.on("connection", (socket) => {
       this.emit("perfect_fit");
       // and if the word doesn't fit, we tell them and why ( false=nofit, true=repeated ??? or is that a clue?):
       appendLog(log_file, datestring + ", NEW_WORD, " + address + ", " + event.word + ", " +  event.clue);
-      appendLog(log_nosploiers, datestring + ", NEW_WORD, " + address + ", " + event.word.length + ", " +  event.clue);
+      appendLog(log_nospoilers, datestring + ", NEW_WORD, " + address + ", " + event.word.length + ", " +  event.clue);
     } else {
       this.emit("nofit");
       appendLog(log_file, datestring + ", NEW_WORD_FAIL, " + address + ", " + event.word + ", " +  event.clue);
@@ -512,12 +512,13 @@ io.on("connection", (socket) => {
         crossword.words[key_of_try].solvedtime = datestring;
         crossword.words[key_of_try].solveattempts += 1;
         right_answer = true;
-        appendLog(log_file, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
+        appendLog(log_file, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
+        appendLog(log_nospoilers, datestring + ", SOLVE, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts + ", " +  word);
       } else {
         let datestring = pretty_date()
         crossword.words[key_of_try].solveattempts += 1;
         appendLog(log_file, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
-        appendLog(log_nosploiers, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
+        appendLog(log_nospoilers, datestring + ", SOLVE_FAIL, " + address + ", " + crossword.words[key_of_try].word.length + ", " + crossword.words[key_of_try].clue + ", " + crossword.words[key_of_try].solveattempts);
       }
     }
 
