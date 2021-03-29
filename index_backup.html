@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame - Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Palavrilhas - cruzamento anónimo de palavras</title>
+    <link href="./css/style.css" rel="stylesheet" />
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <div class="links">
+      <div><a href="#" id="openAbout">SOBRE</a></div>
+      <div><a id="insta" class="img_insta" href="https://www.instagram.com/palavrilhas_jogo/" target="_blank">INSTAGRAM</a></div>
+      <!-- <div><a class="img_insta" href="https://www.instagram.com/jogo_palavrilhas/" target="_blank"><img src="./css/logo_instagram.png" alt="Ver instagram"></a></div> -->
+    </div>
+    <div class="contem_tudo">
+      <div id="mensagens"></div>
+
+      <div id="conteudo">
+        <div id="counter"></div>
+        <div class="tabs" id="tab_1">
+          <div class="interior_tabs">
+            <div class="imagem_titulo"></div>
+            <p class="maiusculas suggest">
+              <a href="/" class="link" id="create_button">Sugerir</a>
+            </p>
+            <p class="maiusculas resolver">
+              <a href="/" class="link" id="solve_button">Resolver</a>
+            </p>
+          </div>
+        </div>
+        <div class="tabs" id="tab_2" style="display: none">
+          <div class="interior_tabs">
+            <form
+              action=""
+              autocomplete="off"
+              autocapitalize="none"
+              spellcheck="false"
+            >
+              <input
+                type="text"
+                autocomplete="off"
+                autocapitalize="none"
+                spellcheck="false"
+                id="form_nova_palavra"
+                placeholder="palavra"
+              />
+              <textarea
+                name="form_nova_pista"
+                id="form_nova_pista"
+                cols="30"
+                rows="10"
+                placeholder="pista para adivinhar a palavra"
+              ></textarea>
+              <button id="suggest" type="submit">Sugerir</button>
+            </form>
+          </div>
+        </div>
+        <div class="tabs" id="tab_3" style="display: none">
+          <div class="interior_tabs">
+            <div class="lista_palavras">
+              <div>
+                <h2>horizontais</h2>
+                <ul id="lista_horizontais">
+                  <li>
+                    Ainda não há palavras horizontais... sugira a primeira!
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h2>verticais</h2>
+                <ul id="lista_verticais">
+                  <li>Ainda não há palavras verticais... sugira a primeira!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs twitch">
+          <iframe
+            src="https://player.twitch.tv/?channel=palavrilhas&parent=www.palavrilhas.com&parent=palavrilhas.com&parent=palavras-cruzadas-server.herokuapp.com&parent=localhost&muted=true"
+            height="100%"
+            width="100%"
+            allowfullscreen="true"
+          >
+          </iframe>
+        </div>
+
+        <div class="tabs" id="tab_5">
+          <div class="interior_tabs">
+            <div class="explica">
+              <div id="connection"><span class="off"></span></div>
+              <p class="players_container">
+                jogadores ligados: <span id="player_number"></span>
+              </p>
+              <a class="escondido" id="reset" style="display: none">xxx</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="aboutdiv" style="display: none;">
+      <div>
+        <h3>Palavrilhas é uma instalação visual generativa, interactiva e colaborativa, inspirada no jogo das palavras cruzadas.</h3>
+        <br>
+        <h2>COMO JOGAR</h2>
+        <p>Há duas formas de participar:</p>
+        <p><strong>SUGERIR</strong> uma palavra e a pista correspondente - Se a palavra couber em algum lugar na página, a pista é adicionada ao jogo e são desenhados os quadrados correspondentes à palavra.</p>
+        <p><strong>RESOLVER</strong> uma pista já existente − Se a palavra estiver correcta, será escrita nos quadrados vazios correspondentes.</p>
+        <p>O jogo vai sendo desenhado em papel por uma plotter de caneta, e os seus movimentos são filmados e transmitidos em directo.</p>
+        <p>Assim que o papel for preenchido e todas as pistas tiverem sido resolvidas (ou consideradas irresolúveis), o jogo termina e um novo jogo começa numa nova folha de papel.</p>
+        <p><a href="https://www.instagram.com/palavrilhas_jogo/" target="_blank">Ver aqui</a> imagens dos jogos.</p>
+        <p>Venha ver a instalação ao vivo na montra da Oma, em Lisboa. <a href="https://goo.gl/maps/KUCLdQtdUD4K3mXk9" target="_blank">(mapa)</a></p>
+        <br>
+        <h2>SOBRE O PROJETO</h2>
+        <p>A instalação é um convite à interacção anónima entre participantes, através de um jogo familiar que permite criar narrativas, diálogos entre jogadores, ou apenas disparates lúdicos.</p>
+        <p>Palavrilhas pretende transformar um passatempo tradicionalmente solitário numa experiência partilhada. A máquina de desenho permite aos participantes interagir  directamente com a caneta no papel e contribuir para o produto final de forma construtiva, responsiva ou subversiva.</p>
+        <p>Palavrilhas é um projecto de Tiago Rorke e Paulo Andringa.</p>
+        <br>
+        <br>
+        <div class="logos">
+          <a href="https://www.oma-oma.com/" target="_blank"
+            ><img src="./css/logo_oma.png" alt="OMA" /></a
+          ><a href="https://mill.pt/" target="_blank"
+            ><img src="./css/logo_mill.png" alt="Makers in Little Lisbon"
+          /></a>
+        </div>
+        <br>
+        <h2>AGRADECIMENTOS</h2>
+        <p>
+        Maria Boavida - <a href="https://www.oma-oma.com/" target="_blank">Oma</a><br>
+        Maurício Martins - <a href="https://mill.pt/" target="_blank">MILL - Makers In Little Lisbon</a><br>
+        Daniel Pires - <a href="https://www.maushabitos.com/" target="_blank">Maus Hábitos</a><br>
+        Tiago Fróis - <a href="http://www.oficinasdoconvento.com/" target="_blank">Oficinas do Convento</a>
+        </p>
+        <br>
+      </div>
+      <a href="#" id="fecharAbout">&times;</a>
+    </div>
+    <script src="./js/js.js"></script>
+  </body>
+</html>

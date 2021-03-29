@@ -6,105 +6,63 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>Palavrilhas - cruzamento anónimo de palavras</title>
     <link href="./css/style.css" rel="stylesheet" />
-    <script src="/socket.io/socket.io.js"></script>
+    <style>
+    html, body {
+      padding: auto;
+      margin: 0;
+      background: #333;
+    }
+
+    .video_wrapper
+    {
+      margin:0px;
+      padding:0px;
+      position: relative;
+      /*z-index: 100;*/
+    }
+    .video_wrapper iframe,
+    .video_wrapper video,
+    .video_wrapper img
+    {
+      position: fixed;
+      z-index: 1;
+      min-width: 100%;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    </style>
   </head>
 
   <body>
+    <div class="video_wrapper">
+       <iframe id="video_iframe" src="https://player.vimeo.com/video/514734827?title=0&byline=0&portrait=0autopause=0&controls=1" frameborder="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+    </div>
     <div class="links">
       <div><a href="#" id="openAbout">SOBRE</a></div>
       <div><a id="insta" class="img_insta" href="https://www.instagram.com/palavrilhas_jogo/" target="_blank">INSTAGRAM</a></div>
-      <!-- <div><a class="img_insta" href="https://www.instagram.com/jogo_palavrilhas/" target="_blank"><img src="./css/logo_instagram.png" alt="Ver instagram"></a></div> -->
     </div>
-    <div class="contem_tudo">
-      <div id="mensagens"></div>
 
-      <div id="conteudo">
-        <div id="counter"></div>
-        <div class="tabs" id="tab_1">
-          <div class="interior_tabs">
-            <div class="imagem_titulo"></div>
-            <p class="maiusculas suggest">
-              <a href="/" class="link" id="create_button">Sugerir</a>
-            </p>
-            <p class="maiusculas resolver">
-              <a href="/" class="link" id="solve_button">Resolver</a>
-            </p>
-          </div>
-        </div>
-        <div class="tabs" id="tab_2" style="display: none">
-          <div class="interior_tabs">
-            <form
-              action=""
-              autocomplete="off"
-              autocapitalize="none"
-              spellcheck="false"
-            >
-              <input
-                type="text"
-                autocomplete="off"
-                autocapitalize="none"
-                spellcheck="false"
-                id="form_nova_palavra"
-                placeholder="palavra"
-              />
-              <textarea
-                name="form_nova_pista"
-                id="form_nova_pista"
-                cols="30"
-                rows="10"
-                placeholder="pista para adivinhar a palavra"
-              ></textarea>
-              <button id="suggest" type="submit">Sugerir</button>
-            </form>
-          </div>
-        </div>
-        <div class="tabs" id="tab_3" style="display: none">
-          <div class="interior_tabs">
-            <div class="lista_palavras">
-              <div>
-                <h2>horizontais</h2>
-                <ul id="lista_horizontais">
-                  <li>
-                    Ainda não há palavras horizontais... sugira a primeira!
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h2>verticais</h2>
-                <ul id="lista_verticais">
-                  <li>Ainda não há palavras verticais... sugira a primeira!</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tabs twitch">
-          <iframe
-            src="https://player.twitch.tv/?channel=palavrilhas&parent=www.palavrilhas.com&parent=palavrilhas.com&parent=palavras-cruzadas-server.herokuapp.com&parent=localhost&muted=true"
-            height="100%"
-            width="100%"
-            allowfullscreen="true"
-          >
-          </iframe>
-        </div>
+    <img src="css/palavrilhas_white.png" style="
+      width: 300px;
+      text-align: center;
+      margin: auto;
+      display: block;
+      margin: 70px auto;"
+      >
 
-        <div class="tabs" id="tab_5">
-          <div class="interior_tabs">
-            <div class="explica">
-              <div id="connection"><span class="off"></span></div>
-              <p class="players_container">
-                jogadores ligados: <span id="player_number"></span>
-              </p>
-              <a class="escondido" id="reset" style="display: none">xxx</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div id="aboutdiv" style="display: none;">
       <div>
         <h3>Palavrilhas é uma instalação visual generativa, interactiva e colaborativa, inspirada no jogo das palavras cruzadas.</h3>
-        <br>
+        <h3>
+        Já terminou esta edição das Palavrilhas! Obrigado para vossa participação.<br/>
+        Fiquem atentos nas proximas novas edições.
+        </h3>
+        <p>Entre Janeiro e Março de 2021, esta instalação foi apresentada na montra da <a href="https://www.oma-oma.com/" target="_blank"
+            >Oma</a>, em Lisboa.</p>
         <h2>COMO JOGAR</h2>
         <p>Há duas formas de participar:</p>
         <p><strong>SUGERIR</strong> uma palavra e a pista correspondente - Se a palavra couber em algum lugar na página, a pista é adicionada ao jogo e são desenhados os quadrados correspondentes à palavra.</p>
@@ -112,7 +70,6 @@
         <p>O jogo vai sendo desenhado em papel por uma plotter de caneta, e os seus movimentos são filmados e transmitidos em directo.</p>
         <p>Assim que o papel for preenchido e todas as pistas tiverem sido resolvidas (ou consideradas irresolúveis), o jogo termina e um novo jogo começa numa nova folha de papel.</p>
         <p><a href="https://www.instagram.com/palavrilhas_jogo/" target="_blank">Ver aqui</a> imagens dos jogos.</p>
-        <p>Venha ver a instalação ao vivo na montra da Oma, em Lisboa. <a href="https://goo.gl/maps/KUCLdQtdUD4K3mXk9" target="_blank">(mapa)</a></p>
         <br>
         <h2>SOBRE O PROJETO</h2>
         <p>A instalação é um convite à interacção anónima entre participantes, através de um jogo familiar que permite criar narrativas, diálogos entre jogadores, ou apenas disparates lúdicos.</p>
@@ -139,6 +96,28 @@
       </div>
       <a href="#" id="fecharAbout">&times;</a>
     </div>
-    <script src="./js/js.js"></script>
+    <script>
+      document.addEventListener("click", function (e) {
+
+        let about = document.getElementById("aboutdiv");
+
+        // opens about dialog...
+        if (e.target && e.target.id == "openAbout") {
+          e.preventDefault();
+          about.style.display = 'block';;
+          console.log("abro o about");
+          return false;
+        }
+
+        // closes about dialog...
+        if (e.target && e.target.id == "fecharAbout") {
+          e.preventDefault();
+          about.style.display = 'none';;
+          console.log("fecho o about");
+          return false;
+        }
+
+      });
+    </script>
   </body>
 </html>
